@@ -1,0 +1,1630 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Kuisplanning B&amp;B 3</title>
+<meta name="theme-color" content="#2f6f4e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Kuisplan 3" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%232f6f4e' rx='40'/><rect x='36' y='48' width='120' height='108' fill='%23fff' rx='8'/><rect x='36' y='48' width='120' height='20' fill='%23b8541a'/><circle cx='62' cy='42' r='6' fill='%23b8541a'/><circle cx='130' cy='42' r='6' fill='%23b8541a'/><rect x='60' y='88' width='72' height='12' fill='%232f6f4e' rx='3'/><rect x='60' y='108' width='48' height='12' fill='%23b8541a' rx='3'/><rect x='60' y='128' width='84' height='12' fill='%232f6f4e' rx='3'/></svg>" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%232f6f4e' rx='12'/><rect x='12' y='16' width='40' height='36' fill='%23fff' rx='3'/><rect x='12' y='16' width='40' height='8' fill='%23b8541a'/><rect x='18' y='30' width='24' height='4' fill='%232f6f4e' rx='1'/><rect x='18' y='38' width='16' height='4' fill='%23b8541a' rx='1'/><rect x='18' y='46' width='28' height='4' fill='%232f6f4e' rx='1'/></svg>" />
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"Kuisplanning B%26B","short_name":"Kuisplan","description":"Kuisplanning voor je B%26B op basis van Booking.com en Airbnb","start_url":".","scope":".","display":"standalone","orientation":"any","background_color":"%23f6f5f1","theme_color":"%232f6f4e","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27><rect width=%27192%27 height=%27192%27 fill=%27%232f6f4e%27 rx=%2740%27/><rect x=%2736%27 y=%2748%27 width=%27120%27 height=%27108%27 fill=%27%23fff%27 rx=%278%27/><rect x=%2736%27 y=%2748%27 width=%27120%27 height=%2720%27 fill=%27%23b8541a%27/><rect x=%2760%27 y=%2788%27 width=%2772%27 height=%2712%27 fill=%27%232f6f4e%27 rx=%273%27/><rect x=%2760%27 y=%27108%27 width=%2748%27 height=%2712%27 fill=%27%23b8541a%27 rx=%273%27/><rect x=%2760%27 y=%27128%27 width=%2784%27 height=%2712%27 fill=%27%232f6f4e%27 rx=%273%27/></svg>","sizes":"any","type":"image/svg+xml","purpose":"any"}]}' />
+<style>
+  :root{
+    --bg:#f6f5f1;
+    --card:#ffffff;
+    --ink:#1f2430;
+    --muted:#6b7280;
+    --accent:#2f6f4e;
+    --accent-soft:#e3efe7;
+    --warn:#b8541a;
+    --warn-soft:#fbe7d6;
+    --err:#a2271a;
+    --err-soft:#fbeeea;
+    --ok:#1d6b3d;
+    --border:#e5e2db;
+    --booking:#003580;
+    --airbnb:#ff5a5f;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.05);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent)}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  header h1{margin:0;font-size:24px;letter-spacing:.2px}
+  header .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .btns{display:flex;gap:8px;flex-wrap:wrap}
+  button,.btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);padding:9px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;transition:all .15s}
+  button:hover,.btn:hover{border-color:#c9c4b7;background:#fafaf7}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.primary:hover{background:#275c41;border-color:#275c41}
+  button.ghost{background:transparent}
+  button.small{padding:5px 10px;font-size:12.5px;border-radius:8px}
+  button.danger{color:#a2271a;border-color:#e7c9c3}
+  button.danger:hover{background:#fbeeea}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
+  .card h2{margin:0 0 10px 0;font-size:16px}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border)}
+  .tab{padding:9px 14px;border:none;background:transparent;border-bottom:2px solid transparent;border-radius:0;color:var(--muted);font-weight:500}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+
+  /* Config */
+  .acc{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;background:#fdfdfb}
+  .acc-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+  .acc-head input.name{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:15px;font-weight:600}
+  .feed{border:1px dashed #e1ddd2;border-radius:10px;padding:10px;margin:8px 0;background:#fff}
+  .feed-top{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+  .feed .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:3px 8px;border-radius:999px;color:#fff;white-space:nowrap}
+  .feed .tag.bk{background:var(--booking)}
+  .feed .tag.ab{background:var(--airbnb)}
+  .feed-mode{margin-left:auto;font-size:12px;color:var(--muted)}
+  .feed-mode select{padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px}
+  .feed input.url{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+  .feed textarea.ics{width:100%;min-height:100px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;resize:vertical}
+  .feed .file-row{display:flex;gap:8px;align-items:center}
+  .feed-status{margin-top:6px;font-size:12px;min-height:18px}
+  .feed-status.ok{color:var(--ok)}
+  .feed-status.err{color:var(--err)}
+  .hotel-id-row{margin-top:10px;padding:10px 12px;background:#f3f7ff;border:1px solid #d6e2f3;border-radius:8px}
+  .hotel-id-row label{display:block;font-size:12.5px;color:#234;margin-bottom:5px;font-weight:600}
+  .hotel-id-row label .muted{font-weight:400}
+  .hotel-id-row input{width:180px;max-width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .hotel-id-row .hotel-id-help{margin-top:6px;font-size:11.5px;line-height:1.4}
+  .hotel-id-row code{background:#fff;padding:1px 5px;border-radius:3px;border:1px solid #dce6f5;font-size:11px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .muted{color:var(--muted);font-size:13px}
+  .hint{background:#fff8e7;border:1px solid #f1e2b6;color:#6e5a18;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px}
+  details{margin-top:8px}
+  details summary{cursor:pointer;color:var(--muted);font-size:12.5px}
+  details pre{background:#f5f3ed;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11.5px;white-space:pre-wrap;max-height:200px;overflow:auto}
+
+  /* Status banner */
+  .banner{border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13.5px}
+  .banner.info{background:#eef2ff;border:1px solid #d9deff;color:#24306d}
+  .banner.ok{background:var(--accent-soft);border:1px solid #c5dccd;color:#1d5c3a}
+  .banner.err{background:var(--err-soft);border:1px solid #f1cdc3;color:var(--err)}
+
+  /* Schedule */
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .controls select,.controls input{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
+  .status{font-size:13px;color:var(--muted)}
+
+  table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  thead th{background:#f1efe9;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:#4a4f5c;padding:10px 12px;border-bottom:1px solid var(--border);font-weight:600}
+  tbody td{padding:12px;border-bottom:1px solid #f0ede6;vertical-align:top;font-size:14px}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.today td{background:var(--accent-soft)}
+  tbody tr.past td{opacity:.55}
+  .date{font-weight:600;white-space:nowrap}
+  .weekday{color:var(--muted);font-weight:400;font-size:12.5px;margin-left:4px}
+  .chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;background:var(--accent-soft);color:var(--accent)}
+  .chip.tight{background:var(--warn-soft);color:var(--warn)}
+  .chip.free{background:#eef2ff;color:#3b49a6}
+  .src{display:inline-block;font-size:10.5px;padding:2px 6px;border-radius:4px;color:#fff;margin-left:6px;vertical-align:middle}
+  .src.bk{background:var(--booking)}
+  .src.ab{background:var(--airbnb)}
+
+  .empty{padding:28px;text-align:center;color:var(--muted)}
+  .month-h{margin:24px 0 8px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+  footer{margin-top:28px;color:var(--muted);font-size:12px;text-align:center}
+
+  /* Calendar */
+  .cal-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .cal-toolbar h2{font-size:22px;letter-spacing:-.3px;text-transform:capitalize;font-weight:700}
+  .cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;color:var(--muted);align-items:center}
+  .cal-legend .sw{display:inline-block;width:16px;height:12px;border-radius:4px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);background:#fbfaf5;border:1px solid var(--border);border-bottom:none;border-radius:14px 14px 0 0;overflow:hidden}
+  .cal-weekdays > div{padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#7a8094;font-weight:600;border-right:1px solid var(--border);text-align:center}
+  .cal-weekdays > div:last-child{border-right:none}
+  .cal-weekdays > div.we{color:#b07a3a}
+  .cal-weeks{border:1px solid var(--border);border-top:none;border-radius:0 0 14px 14px;background:#fff;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .cal-week{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:min-content;border-top:1px solid var(--border);position:relative;row-gap:0;padding-bottom:6px}
+  .cal-week:first-child{border-top:none}
+  .day-cell{grid-row:1;border-right:1px solid #efece4;padding:8px 10px 2px;min-height:36px;transition:background .15s}
+  .day-cell:last-child{border-right:none}
+  .day-cell.other-month{background:#faf9f4}
+  .day-cell.other-month .day-num{color:#c9c4b4;font-weight:400}
+  .day-cell.today{background:linear-gradient(180deg,#eef7f1 0%,#e3efe7 100%)}
+  .day-cell.weekend{background:#fdfcf7}
+  .day-cell.today.weekend{background:linear-gradient(180deg,#eef7f1 0%,#e3efe7 100%)}
+  .day-cell.wissel{background:linear-gradient(135deg,#fff3e0 0%,#fbe0c4 100%)}
+  .day-num{font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px;letter-spacing:-.2px}
+  .day-cell.today .day-num{color:#fff}
+  .day-cell.today .day-num .n{background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;box-shadow:0 2px 6px rgba(47,111,78,.35)}
+  .day-num .n{display:inline-block;min-width:18px;text-align:center}
+  .wissel-badge{display:inline-flex;align-items:center;background:linear-gradient(135deg,#d96f2a,#b8541a);color:#fff;font-size:9px;font-weight:700;letter-spacing:.7px;padding:3px 7px;border-radius:999px;text-transform:uppercase;box-shadow:0 1px 3px rgba(184,84,26,.35)}
+  .bar{
+    grid-row:var(--lane);
+    grid-column:var(--cstart) / var(--cend);
+    margin:2px 4px;
+    padding:4px 10px;
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    line-height:1.2;
+    min-height:26px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    background:linear-gradient(180deg, var(--bar-bg,#555) 0%, var(--bar-bg2,#333) 100%);
+    position:relative;
+    z-index:1;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    box-shadow:0 1px 3px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.18);
+    transition:transform .1s, filter .1s;
+  }
+  .bar:hover{filter:brightness(1.06)}
+  .bar:active{transform:scale(.985)}
+  .bar .src-pill{font-size:9px;padding:2px 5px;background:rgba(255,255,255,.22);border-radius:3px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+  .bar .name{overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .bar .ppl{font-size:11px;background:rgba(0,0,0,.22);padding:2px 7px;border-radius:999px;margin-left:auto;font-weight:600;white-space:nowrap}
+  .bar .check{font-size:11px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.26);display:inline-flex;align-items:center;gap:3px;font-weight:700}
+  /* Notitie: felgele pil met preview-tekst — duidelijk zichtbaar */
+  .bar .note-pill{font-size:11px;padding:2px 8px;border-radius:4px;background:#fde047;color:#713f12;font-weight:800;letter-spacing:.2px;display:inline-flex;align-items:center;gap:4px;box-shadow:0 0 0 2px rgba(234,179,8,.55);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0}
+  .bar.has-note{box-shadow:inset 0 0 0 2px #fde047}
+  /* Done = kuis afgevinkt: overschrijf de kamerkleur met fel groen */
+  .bar.done{--bar-bg:#16a34a !important;background:linear-gradient(90deg,#16a34a,#15803d) !important;box-shadow:0 1px 6px rgba(22,163,74,.45),inset 0 0 0 1px rgba(255,255,255,.25)}
+  .bar.done .name{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.75);text-decoration-thickness:2px}
+  .bar.done .check{background:#fff;color:#166534;border:1px solid #bbf7d0;font-size:11px;padding:2px 8px;font-weight:800;letter-spacing:.3px}
+  .bar.done .src-pill{background:rgba(255,255,255,.35)}
+  /* arrow shapes via clip-path */
+  .bar.start{clip-path:polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%);padding-left:16px}
+  .bar.end{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%);padding-right:16px}
+  .bar.start.end{clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%);padding-left:16px;padding-right:16px}
+  .bar.mid{border-radius:0}
+  .bar.start:not(.end){border-radius:0 6px 6px 0}
+  .bar.end:not(.start){border-radius:6px 0 0 6px}
+  .bar.start.end{border-radius:6px}
+
+  .cal-empty{padding:28px;text-align:center;color:var(--muted)}
+
+  /* Modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(20,22,30,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .modal-backdrop.show{display:flex}
+  .modal{background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:460px;width:100%;overflow:hidden;animation:modalIn .18s ease-out}
+  @keyframes modalIn{from{transform:translateY(10px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  .modal-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;color:#fff;background:linear-gradient(135deg,var(--m-color,#2f6f4e),var(--m-color2,#1d5c3a))}
+  .modal-head h3{margin:0;font-size:17px;font-weight:700;flex:1}
+  .modal-head .src-pill{font-size:10px;padding:3px 7px;background:rgba(255,255,255,.25);border-radius:4px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+  .modal-close{background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;width:28px;height:28px;line-height:1;border-radius:50%;opacity:.85}
+  .modal-close:hover{background:rgba(255,255,255,.15);opacity:1}
+  .modal-body{padding:18px 20px}
+  .modal-body .kv{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px dashed #eceae2}
+  .modal-body .kv:last-of-type{border-bottom:none}
+  .modal-body .kv .k{color:var(--muted)}
+  .modal-body .kv .v{font-weight:600}
+  .modal-body .field{margin-top:14px}
+  .modal-body .field label{font-size:12.5px;color:var(--muted);display:block;margin-bottom:4px}
+  .modal-body .field input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px}
+  .modal-body .field textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:64px;line-height:1.4}
+  .modal-body .field textarea:focus{outline:none;border-color:#9ab1dc;box-shadow:0 0 0 3px rgba(60,90,170,.15)}
+  .modal-actions{display:flex;gap:8px;padding:12px 20px 20px;flex-wrap:wrap}
+  .modal-actions .spacer{flex:1}
+  .btn-done{background:linear-gradient(135deg,#25d366,#128c7e);border:none;color:#fff;padding:11px 16px;border-radius:12px;font-weight:700;font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 3px 10px rgba(37,211,102,.3)}
+  .btn-done:hover{filter:brightness(1.05)}
+  .btn-undone{background:#fff;border:1px solid #e6ddcd;color:var(--warn);padding:9px 14px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13.5px}
+  .btn-link{background:#fff;border:1px solid var(--border);color:#234;padding:9px 14px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13.5px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+  .btn-link:hover{background:#f7f4ec;border-color:#d8ceb5}
+  .btn-link.booking{color:#003580;border-color:#cfd9ea;background:#f3f7ff}
+  .btn-link.airbnb{color:#e31c5f;border-color:#f3cddb;background:#fff5f8}
+  .done-banner{background:linear-gradient(135deg,#e3efe7,#d7ecde);color:#1d5c3a;border:1px solid #c5dccd;border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .notify-hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .notify-missing{background:#fff8e7;border:1px solid #f1e2b6;color:#6e5a18;border-radius:10px;padding:10px 12px;font-size:13px;margin:8px 0}
+
+  @media print{
+    body{background:#fff}
+    .wrap{max-width:none;padding:0}
+    .no-print,.tabs,header .btns,.controls,.hint,.banner{display:none!important}
+    .card{border:none;box-shadow:none;padding:0;margin:0}
+    table{border:none;border-radius:0}
+    thead th{background:#eee;color:#000}
+    tbody tr.past{display:none}
+    .cal-toolbar button{display:none}
+    .bar{color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .day-cell.today,.day-cell.wissel,.day-cell.weekend,.cal-weekdays > div{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Kuisplanning B&amp;B</h1>
+      <div class="sub">Automatisch opgehaald uit Booking.com &amp; Airbnb</div>
+    </div>
+    <div class="btns no-print">
+      <button class="primary" id="btn-refresh">↻ Vernieuwen</button>
+      <button id="btn-print">🖨 Printen</button>
+    </div>
+  </header>
+
+  <div class="tabs no-print">
+    <button class="tab active" data-tab="calendar">Maandkalender</button>
+    <button class="tab" data-tab="schedule">Kuislijst</button>
+    <button class="tab" data-tab="config">Instellingen</button>
+    <button class="tab" data-tab="help">Hoe werkt het?</button>
+  </div>
+
+  <!-- CALENDAR -->
+  <section id="tab-calendar">
+    <div class="card">
+      <div class="cal-toolbar no-print">
+        <button id="cal-prev" class="small">◀</button>
+        <button id="cal-today" class="small">Vandaag</button>
+        <button id="cal-next" class="small">▶</button>
+        <h2 id="cal-title" style="margin:0 0 0 6px"></h2>
+        <span id="cal-legend" class="cal-legend"></span>
+      </div>
+      <div id="cal-banner"></div>
+      <div id="cal-body"></div>
+      <p class="muted" style="margin-top:10px;font-size:12.5px">
+        Tip: klik op een balk om het aantal personen in te vullen of aan te passen. Een <span class="wissel-badge" style="position:static;display:inline-block;margin:0 2px">⇆ WISSEL</span> betekent dat er die dag zowel een check-out als een check-in is in dezelfde kamer.
+      </p>
+    </div>
+  </section>
+
+  <!-- KUISLIJST -->
+  <section id="tab-schedule" style="display:none">
+    <div class="card">
+      <div class="controls no-print">
+        <label>Toon:
+          <select id="filter-range">
+            <option value="30">Komende 30 dagen</option>
+            <option value="60" selected>Komende 60 dagen</option>
+            <option value="90">Komende 90 dagen</option>
+            <option value="all">Alles</option>
+          </select>
+        </label>
+        <label>Kamer:
+          <select id="filter-acc"><option value="">Alle kamers</option></select>
+        </label>
+        <span class="status" id="status"></span>
+      </div>
+      <div id="banner-area"></div>
+      <div id="schedule-body"></div>
+    </div>
+  </section>
+
+  <!-- CONFIG -->
+  <section id="tab-config" style="display:none">
+    <div class="card">
+      <h2>Accommodaties</h2>
+      <div class="hint">
+        Per kamer kan je tot twee feeds toevoegen (Booking.com en Airbnb). Per feed kies je één van drie methoden:
+        <b>URL ophalen</b> (eenvoudigst — vereist een werkende CORS-proxy),
+        <b>Tekst plakken</b> (plak de inhoud van je .ics-bestand),
+        of <b>Bestand uploaden</b> (kies een .ics-bestand van je computer). De laatste twee werken altijd, zonder internet.
+      </div>
+      <div id="accs"></div>
+      <button id="btn-add-acc">+ Kamer toevoegen</button>
+    </div>
+
+    <div class="card">
+      <h2>Notificaties</h2>
+      <p class="muted" style="margin-top:0">Wanneer de kuisvrouw een kamer afvinkt, opent automatisch WhatsApp met een kant-en-klaar bericht naar jouw nummer.</p>
+      <label class="row" style="gap:10px">
+        <span style="min-width:170px">WhatsApp-nummer:</span>
+        <input id="notify-phone" type="tel" placeholder="+32 475 12 34 56" value="" style="flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+      </label>
+      <p class="notify-hint">Inclusief landcode, spaties en koppeltekens mogen. Voorbeeld voor België: <code>+32 475 12 34 56</code>.</p>
+    </div>
+
+    <div class="card">
+      <h2>CORS-proxy volgorde</h2>
+      <p class="muted" style="margin-top:0">Bij URL-ophalen probeert de app automatisch onderstaande proxies in deze volgorde tot één lukt. Vink uit wat je niet wil gebruiken.</p>
+      <div id="proxy-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>Data</h2>
+      <div class="row">
+        <button id="btn-export">⬇ Instellingen exporteren</button>
+        <button id="btn-import">⬆ Instellingen importeren</button>
+        <button class="danger" id="btn-clear">Alles wissen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HELP -->
+  <section id="tab-help" style="display:none">
+    <div class="card">
+      <h2>Lukt het ophalen niet?</h2>
+      <p>Booking.com en Airbnb staan niet toe dat de browser rechtstreeks bij de iCal-feed kan. De app gebruikt daarom een openbare proxy. Werkt geen enkele proxy? Dan zijn er twee betrouwbare alternatieven per feed:</p>
+      <ol>
+        <li><b>Tekst plakken:</b> open de iCal-URL in een nieuw tabblad, selecteer alles (Ctrl/Cmd+A), kopieer en plak in het tekstvak van de feed.</li>
+        <li><b>Bestand uploaden:</b> download de .ics via de iCal-URL (rechtsklik → opslaan als) en kies het bestand via de uploadknop.</li>
+      </ol>
+      <p>In beide gevallen krijg je onmiddellijk een groen statusje als de inhoud correct is.</p>
+    </div>
+    <div class="card">
+      <h2>Booking.com iCal-link ophalen</h2>
+      <ol>
+        <li>Open de <b>Pulse</b>-app of <a href="https://admin.booking.com" target="_blank" rel="noopener">admin.booking.com</a>.</li>
+        <li>Ga naar <b>Tarieven &amp; Beschikbaarheid → Agenda's synchroniseren</b>.</li>
+        <li>Kies <b>Kalender exporteren</b> en kopieer de iCal-URL (eindigt op <code>.ics</code>).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Airbnb iCal-link ophalen</h2>
+      <ol>
+        <li>Ga naar je <b>Advertentie</b> op airbnb.com.</li>
+        <li>Kies <b>Beschikbaarheid → Agenda synchroniseren</b>.</li>
+        <li>Klik op <b>Kalender exporteren</b> en kopieer de URL.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer class="no-print">
+    Lokale app — gegevens blijven op dit toestel (localStorage). Geen account nodig.
+  </footer>
+</div>
+
+<!-- Booking detail modal -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head" id="modal-head">
+      <h3 id="modal-title">—</h3>
+      <span class="src-pill" id="modal-src">—</span>
+      <button class="modal-close" id="modal-close" aria-label="Sluiten">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="modal-done-banner"></div>
+      <div class="kv"><span class="k">Check-in</span><span class="v" id="modal-checkin">—</span></div>
+      <div class="kv"><span class="k">Check-out (kuisdag)</span><span class="v" id="modal-checkout">—</span></div>
+      <div class="kv"><span class="k">Nachten</span><span class="v" id="modal-nights">—</span></div>
+      <div class="kv"><span class="k">Volgende gast</span><span class="v" id="modal-nextin">—</span></div>
+      <div class="field">
+        <label for="modal-people">Aantal personen (optioneel)</label>
+        <input type="number" id="modal-people" min="0" step="1" />
+        <span id="modal-people-auto" class="muted" style="display:none;font-size:11.5px;margin-top:4px">Automatisch ingelezen uit reservatie</span>
+      </div>
+      <div class="field">
+        <label for="modal-notes">Notities (bv. aparte bedden, allergieën, extra vermeldingen…)</label>
+        <textarea id="modal-notes" rows="3" placeholder="Typ hier eventuele opmerkingen voor de kuisvrouw of voor jezelf."></textarea>
+      </div>
+      <div id="modal-notify-missing" class="notify-missing" style="display:none">
+        ⚠ Geen WhatsApp-nummer ingesteld. Voeg het toe onder <b>Instellingen → Notificaties</b> om automatisch een bericht te sturen.
+      </div>
+      <!-- Finish-form: only visible after clicking "Melden als klaar" -->
+      <div id="modal-finish-form" style="display:none;border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+        <div class="field">
+          <label for="modal-duration">Hoeveel tijd heeft de kuis geduurd? (minuten)</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <button type="button" class="small dur-quick" data-dur="15">15 min</button>
+            <button type="button" class="small dur-quick" data-dur="30">30 min</button>
+            <button type="button" class="small dur-quick" data-dur="45">45 min</button>
+            <button type="button" class="small dur-quick" data-dur="60">1 uur</button>
+            <button type="button" class="small dur-quick" data-dur="75">1 u 15</button>
+            <button type="button" class="small dur-quick" data-dur="90">1 u 30</button>
+            <button type="button" class="small dur-quick" data-dur="120">2 uur</button>
+          </div>
+          <input type="number" id="modal-duration" min="0" step="1" placeholder="bv. 45" />
+        </div>
+        <div class="field">
+          <label for="modal-kuis-note">Opmerkingen voor de eigenaar (bv. glas gebroken, gordijn kapot, iets vergeten…)</label>
+          <textarea id="modal-kuis-note" rows="3" placeholder="Laat leeg als er niets bijzonders is."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <a id="modal-reservation-link" class="btn-link" href="#" target="_blank" rel="noopener" style="display:none">🔗 Open reservatie</a>
+      <button class="btn-undone" id="modal-undo" style="display:none">Ongedaan maken</button>
+      <div class="spacer"></div>
+      <button id="modal-finish-cancel" style="display:none">Annuleer</button>
+      <button class="btn-done" id="modal-done">✓ Melden als klaar</button>
+      <button class="btn-done" id="modal-finish-confirm" style="display:none">✓ Bevestig &amp; stuur bericht</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Storage ---------- */
+const LS_KEY = "bnb-cleaning-planner-v4";
+const DEFAULT_PROXIES = [
+  { id:"corsproxy",  label:"corsproxy.io",        enabled:true,  url: u => "https://corsproxy.io/?" + encodeURIComponent(u) },
+  { id:"allorigins", label:"api.allorigins.win",  enabled:true,  url: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) },
+  { id:"codetabs",   label:"api.codetabs.com",    enabled:true,  url: u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u) },
+  { id:"thingproxy", label:"thingproxy.freeboard.io", enabled:false, url: u => "https://thingproxy.freeboard.io/fetch/" + u },
+  { id:"direct",     label:"Direct (geen proxy)", enabled:false, url: u => u }
+];
+function defaultCfg(){ return { accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})), guestCounts: {}, cleanings: {}, notify: { phone: "" }, notes: {} }; }
+function loadCfg(){
+  try{
+    let raw = JSON.parse(localStorage.getItem(LS_KEY));
+    // Auto-inherit config from kuisplanning2 (bnb-cleaning-planner-v3) if v3-app storage empty
+    if(!raw){
+      const prev = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v3"));
+      if(prev){
+        raw = prev;
+        // persist to v4 so older versions stay independent afterwards
+        try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){}
+      }
+    }
+    // fallback: nog oudere versie
+    if(!raw){
+      const vOld = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v2"));
+      if(vOld){
+        raw = vOld;
+        try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){}
+      }
+    }
+    if(!raw) return defaultCfg();
+    // migrate
+    if(!raw.proxies) raw.proxies = defaultCfg().proxies;
+    if(!raw.accommodations) raw.accommodations = [];
+    if(!raw.guestCounts) raw.guestCounts = {};
+    if(!raw.cleanings) raw.cleanings = {};
+    if(!raw.notify) raw.notify = { phone: "" };
+    for(const a of raw.accommodations){
+      for(const k of ["booking","airbnb"]){
+        if(typeof a[k] === "string"){
+          a[k] = { mode:"url", url:a[k], text:"", filename:"" };
+        }
+        if(!a[k]) a[k] = { mode:"url", url:"", text:"", filename:"" };
+      }
+      if(typeof a.bookingHotelId !== "string") a.bookingHotelId = "";
+      if(typeof a.bookingUrlTemplate !== "string") a.bookingUrlTemplate = "";
+    }
+    if(!raw.notes) raw.notes = {};
+    return raw;
+  } catch(e){ return defaultCfg(); }
+}
+function saveCfg(){ localStorage.setItem(LS_KEY, JSON.stringify(cfg)); }
+let cfg = loadCfg();
+let events = [];
+let lastFetchLog = []; // per-feed {acc, src, status, detail}
+let calCursor = startOfMonth(new Date()); // currently viewed month for calendar
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    ["calendar","schedule","config","help"].forEach(id=>{
+      document.getElementById("tab-"+id).style.display = (id===t.dataset.tab)?"":"none";
+    });
+    if(t.dataset.tab==="calendar") renderCalendar();
+  });
+});
+
+/* ---------- Config UI ---------- */
+const accsEl = document.getElementById("accs");
+function feedBlock(accIdx, src){
+  const key = src==="Booking" ? "booking" : "airbnb";
+  const tagClass = src==="Booking" ? "bk" : "ab";
+  const a = cfg.accommodations[accIdx];
+  const f = a[key];
+  const idBase = "f"+accIdx+"-"+key;
+  let inner = "";
+  if(f.mode==="url"){
+    inner = `<input class="url" placeholder="https://..." value="${escapeHtml(f.url||"")}" data-url="${accIdx}|${key}" />`;
+  } else if(f.mode==="text"){
+    inner = `<textarea class="ics" placeholder="Plak hier de volledige inhoud van de .ics-feed (begint met BEGIN:VCALENDAR)" data-text="${accIdx}|${key}">${escapeHtml(f.text||"")}</textarea>`;
+  } else if(f.mode==="file"){
+    inner = `<div class="file-row">
+      <button class="small" data-file="${accIdx}|${key}">${f.filename ? "Ander bestand kiezen" : "Bestand kiezen…"}</button>
+      <span class="muted">${f.filename ? escapeHtml(f.filename) : "geen bestand gekozen"}</span>
+    </div>`;
+  }
+  const status = f._status || "";
+  const statusClass = f._statusClass || "";
+  const hotelIdRow = src==="Booking"
+    ? `<div class="hotel-id-row">
+         <label for="${idBase}-hotelid">Booking hotel-ID (optioneel) <span class="muted">— voor directe link naar reservatie</span></label>
+         <input id="${idBase}-hotelid" type="text" inputmode="numeric" placeholder="bv. 1234567" value="${escapeHtml(a.bookingHotelId||"")}" data-hotelid="${accIdx}" />
+         <div class="muted hotel-id-help">Vind je in de URL van <b>admin.booking.com</b> als <code>hotel_id=…</code>.</div>
+         <label style="margin-top:10px" for="${idBase}-urltpl">URL-sjabloon (optioneel) <span class="muted">— plak hier de echte URL uit je browser</span></label>
+         <input id="${idBase}-urltpl" type="text" placeholder="https://admin.booking.com/…?hotel_id={hotel_id}&amp;res_id={res_id}" value="${escapeHtml(a.bookingUrlTemplate||"")}" data-urltpl="${accIdx}" style="width:100%" />
+         <div class="muted hotel-id-help">
+           Als het standaardsjabloon niet werkt: log in op admin.booking.com, klik op een reservatie, kopieer de volledige URL
+           uit je browser-balk, en vervang het nummer na <code>hotel_id=</code> door <code>{hotel_id}</code> en het nummer na <code>res_id=</code>
+           (of <code>reservation=</code>) door <code>{res_id}</code>. Laat leeg om de standaard te gebruiken.
+         </div>
+       </div>`
+    : "";
+  return `<div class="feed">
+    <div class="feed-top">
+      <span class="tag ${tagClass}">${src}</span>
+      <span class="feed-mode">Methode:
+        <select data-mode="${accIdx}|${key}">
+          <option value="url" ${f.mode==="url"?"selected":""}>URL ophalen</option>
+          <option value="text" ${f.mode==="text"?"selected":""}>Tekst plakken</option>
+          <option value="file" ${f.mode==="file"?"selected":""}>Bestand uploaden</option>
+        </select>
+      </span>
+    </div>
+    ${inner}
+    <div class="feed-status ${statusClass}" id="${idBase}-status">${escapeHtml(status)}</div>
+    ${hotelIdRow}
+  </div>`;
+}
+function renderAccs(){
+  accsEl.innerHTML = "";
+  if(cfg.accommodations.length===0){
+    accsEl.innerHTML = '<p class="muted">Nog geen kamers. Klik hieronder op "Kamer toevoegen".</p>';
+  }
+  cfg.accommodations.forEach((a,i)=>{
+    const card = document.createElement("div");
+    card.className = "acc";
+    card.innerHTML = `
+      <div class="acc-head">
+        <input class="name" placeholder="Naam kamer (bv. Blauwe Kamer)" value="${escapeHtml(a.name||"")}" data-i="${i}" />
+        <button class="danger small" data-del="${i}">Verwijderen</button>
+      </div>
+      ${feedBlock(i,"Booking")}
+      ${feedBlock(i,"Airbnb")}
+    `;
+    accsEl.appendChild(card);
+  });
+  bindAccEvents();
+}
+function bindAccEvents(){
+  accsEl.querySelectorAll("input.name").forEach(el=>{
+    el.addEventListener("input",()=>{ cfg.accommodations[+el.dataset.i].name = el.value; saveCfg(); refreshAccFilter(); });
+  });
+  accsEl.querySelectorAll("select[data-mode]").forEach(el=>{
+    el.addEventListener("change",()=>{
+      const [i,k] = el.dataset.mode.split("|");
+      cfg.accommodations[+i][k].mode = el.value;
+      saveCfg(); renderAccs();
+    });
+  });
+  accsEl.querySelectorAll("input[data-url]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const [i,k] = el.dataset.url.split("|");
+      cfg.accommodations[+i][k].url = el.value.trim(); saveCfg();
+    });
+  });
+  accsEl.querySelectorAll("textarea[data-text]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const [i,k] = el.dataset.text.split("|");
+      cfg.accommodations[+i][k].text = el.value; saveCfg();
+      const ok = /BEGIN:VCALENDAR/i.test(el.value);
+      const statusEl = el.nextElementSibling;
+      if(statusEl){
+        statusEl.className = "feed-status " + (ok?"ok":(el.value.trim()?"err":""));
+        statusEl.textContent = ok ? "✓ Geldige iCal-tekst herkend." : (el.value.trim() ? "Tekst lijkt niet op een iCal-feed (BEGIN:VCALENDAR ontbreekt)." : "");
+      }
+    });
+  });
+  accsEl.querySelectorAll("button[data-file]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const [i,k] = el.dataset.file.split("|");
+      const inp = document.createElement("input");
+      inp.type = "file"; inp.accept = ".ics,text/calendar,text/plain";
+      inp.onchange = () => {
+        const f = inp.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          cfg.accommodations[+i][k].text = r.result;
+          cfg.accommodations[+i][k].filename = f.name;
+          saveCfg(); renderAccs();
+        };
+        r.readAsText(f);
+      };
+      inp.click();
+    });
+  });
+  accsEl.querySelectorAll("button[data-del]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      if(!confirm("Deze kamer verwijderen?")) return;
+      cfg.accommodations.splice(+el.dataset.del,1);
+      saveCfg(); renderAccs(); refreshAccFilter(); render();
+    });
+  });
+  accsEl.querySelectorAll("input[data-hotelid]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const i = +el.dataset.hotelid;
+      // keep only digits
+      const clean = (el.value||"").replace(/[^\d]/g,"");
+      if(clean !== el.value) el.value = clean;
+      cfg.accommodations[i].bookingHotelId = clean;
+      saveCfg();
+    });
+  });
+  accsEl.querySelectorAll("input[data-urltpl]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const i = +el.dataset.urltpl;
+      cfg.accommodations[i].bookingUrlTemplate = (el.value||"").trim();
+      saveCfg();
+    });
+  });
+}
+document.getElementById("btn-add-acc").addEventListener("click",()=>{
+  cfg.accommodations.push({
+    name:"",
+    bookingHotelId:"",
+    bookingUrlTemplate:"",
+    booking:{mode:"url",url:"",text:"",filename:""},
+    airbnb: {mode:"url",url:"",text:"",filename:""}
+  });
+  saveCfg(); renderAccs(); refreshAccFilter();
+});
+
+/* ---------- Proxy list ---------- */
+function renderProxies(){
+  const list = document.getElementById("proxy-list");
+  list.innerHTML = "";
+  DEFAULT_PROXIES.forEach(p=>{
+    const saved = cfg.proxies.find(x=>x.id===p.id);
+    const enabled = saved ? saved.enabled : p.enabled;
+    const row = document.createElement("label");
+    row.className = "row";
+    row.style.padding = "4px 0";
+    row.innerHTML = `<input type="checkbox" ${enabled?"checked":""} data-pid="${p.id}" /> <b>${escapeHtml(p.label)}</b>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("input[data-pid]").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      const id = inp.dataset.pid;
+      const existing = cfg.proxies.find(x=>x.id===id);
+      if(existing) existing.enabled = inp.checked;
+      else cfg.proxies.push({id, enabled:inp.checked});
+      saveCfg();
+    });
+  });
+}
+
+/* ---------- Export/import/clear ---------- */
+/* ---------- Notificaties ---------- */
+const notifyPhoneEl = document.getElementById("notify-phone");
+notifyPhoneEl.value = (cfg.notify && cfg.notify.phone) || "";
+notifyPhoneEl.addEventListener("input",()=>{
+  if(!cfg.notify) cfg.notify = {};
+  cfg.notify.phone = notifyPhoneEl.value.trim();
+  saveCfg();
+});
+function normalizePhone(p){
+  return (p||"").replace(/[^\d+]/g,"");
+}
+
+document.getElementById("btn-export").addEventListener("click",()=>{
+  // strip transient fields
+  const clean = JSON.parse(JSON.stringify(cfg));
+  for(const a of clean.accommodations){
+    for(const k of ["booking","airbnb"]){
+      if(a[k]){ delete a[k]._status; delete a[k]._statusClass; }
+    }
+  }
+  const blob = new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kuisplanning-config.json";
+  a.click();
+});
+document.getElementById("btn-import").addEventListener("click",()=>{
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/json";
+  inp.onchange = () => {
+    const f = inp.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const obj = JSON.parse(r.result);
+        if(obj && Array.isArray(obj.accommodations)){
+          localStorage.setItem(LS_KEY, JSON.stringify(obj));
+          cfg = loadCfg();
+          renderAccs(); refreshAccFilter(); renderProxies(); refresh();
+          alert("Instellingen geïmporteerd.");
+        } else alert("Ongeldig bestand.");
+      }catch(e){ alert("Kan bestand niet lezen: "+e.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+});
+document.getElementById("btn-clear").addEventListener("click",()=>{
+  if(!confirm("Alle instellingen wissen?")) return;
+  cfg = defaultCfg(); saveCfg(); renderAccs(); refreshAccFilter(); renderProxies(); events=[]; render();
+});
+
+/* ---------- Fetch with proxy chain ---------- */
+function proxyFns(){
+  return DEFAULT_PROXIES
+    .filter(p => (cfg.proxies.find(x=>x.id===p.id)||{enabled:p.enabled}).enabled)
+    .map(p => ({ id:p.id, label:p.label, build:p.url }));
+}
+async function fetchViaProxies(url){
+  const tried = [];
+  for(const p of proxyFns()){
+    const pUrl = p.build(url);
+    try{
+      const res = await fetch(pUrl, {cache:"no-store"});
+      const txt = await res.text();
+      if(!res.ok){
+        tried.push(`${p.label}: HTTP ${res.status}`);
+        continue;
+      }
+      if(!/BEGIN:VCALENDAR/i.test(txt)){
+        tried.push(`${p.label}: antwoord is geen iCal (eerste 80 tekens: ${txt.slice(0,80).replace(/\s+/g," ")}…)`);
+        continue;
+      }
+      return { ok:true, text:txt, proxy:p.label, tried };
+    }catch(e){
+      tried.push(`${p.label}: ${e.message}`);
+    }
+  }
+  return { ok:false, tried };
+}
+
+/* ---------- Reservation URL extraction ---------- */
+function extractReservationUrl(ev, src, acc){
+  const desc = (ev.description||"");
+  const sum  = (ev.summary||"");
+  const uid  = (ev.uid||"");
+  const srcLow = (src||"").toLowerCase();
+  // iCal DESCRIPTION often escapes newlines/commas; unescape for URL matching
+  const descUnesc = desc.replace(/\\n/g," ").replace(/\\,/g,",").replace(/\\;/g,";");
+  const allText = descUnesc + " " + sum + " " + uid;
+  // 1) Airbnb: look for "Reservation URL: https://..."
+  let m = descUnesc.match(/Reservation\s*URL\s*:\s*(https?:\/\/\S+)/i);
+  if(m) return m[1].replace(/[>)\].,;]+$/,"");
+  // 2) Any https URL referencing airbnb
+  m = allText.match(/https?:\/\/(?:www\.)?airbnb\.[a-z.]+\/\S+/i);
+  if(m) return m[0].replace(/[>)\].,;]+$/,"");
+  // 3) Any booking.com URL
+  m = allText.match(/https?:\/\/(?:www\.|admin\.|secure\.)?booking\.com\/\S+/i);
+  if(m) return m[0].replace(/[>)\].,;]+$/,"");
+  // 4) Booking.com: als we een hotel-ID en res_id hebben kunnen we een deep-link bouwen.
+  //    Gebruiker kan ook een eigen URL-sjabloon geven met {hotel_id} en {res_id}.
+  if(srcLow.includes("booking")){
+    const hotelId = (acc && acc.bookingHotelId ? String(acc.bookingHotelId).replace(/[^\d]/g,"") : "");
+    const tpl = (acc && acc.bookingUrlTemplate) ? String(acc.bookingUrlTemplate).trim() : "";
+    // UID van Booking.com is meestal iets zoals "1234567890@booking.com" — die lange getalreeks = res_id
+    let resId = "";
+    const uidM = uid.match(/(\d{6,})/);
+    if(uidM) resId = uidM[1];
+    else {
+      const txtM = allText.match(/(?:reservation|booking|res[\.\s#-]*nr|nummer|number)[^\d]{0,8}(\d{6,})/i);
+      if(txtM) resId = txtM[1];
+    }
+    // Als gebruiker een eigen sjabloon gaf: gebruik dat (placeholders vervangen)
+    if(tpl && resId){
+      return tpl
+        .replace(/\{hotel_id\}/g, encodeURIComponent(hotelId))
+        .replace(/\{res_id\}/g,   encodeURIComponent(resId));
+    }
+    // Standaardformaat (oude extranet — werkt niet voor iedereen):
+    if(hotelId && resId){
+      return "https://admin.booking.com/hotel/hoteladmin/extranet_ng/manage/booking.html"
+           + "?hotel_id=" + encodeURIComponent(hotelId)
+           + "&res_id="   + encodeURIComponent(resId);
+    }
+    if(hotelId){
+      return "https://admin.booking.com/hotel/hoteladmin/extranet_ng/manage/search_reservations.html"
+           + "?hotel_id=" + encodeURIComponent(hotelId);
+    }
+    return "https://admin.booking.com/";
+  }
+  if(srcLow.includes("airbnb")){
+    return "https://www.airbnb.com/hosting/reservations";
+  }
+  // Unknown source — last-resort: any https URL we can find
+  m = allText.match(/https?:\/\/\S+/i);
+  if(m) return m[0].replace(/[>)\].,;]+$/,"");
+  return "";
+}
+
+/* ---------- iCal parser ---------- */
+function parseIcal(text){
+  const lines = text.replace(/\r\n[ \t]/g,"").replace(/\n[ \t]/g,"").split(/\r?\n/);
+  const evs = [];
+  let cur = null;
+  for(const line of lines){
+    if(line === "BEGIN:VEVENT"){ cur = {}; continue; }
+    if(line === "END:VEVENT"){ if(cur) evs.push(cur); cur = null; continue; }
+    if(!cur) continue;
+    const idx = line.indexOf(":");
+    if(idx<0) continue;
+    const keyRaw = line.slice(0,idx);
+    const val = line.slice(idx+1);
+    const key = keyRaw.split(";")[0].toUpperCase();
+    if(key==="DTSTART") cur.start = parseIcalDate(val);
+    else if(key==="DTEND") cur.end = parseIcalDate(val);
+    else if(key==="SUMMARY") cur.summary = val;
+    else if(key==="UID") cur.uid = val;
+    else if(key==="DESCRIPTION") cur.description = val;
+  }
+  return evs;
+}
+function parseIcalDate(val){
+  const v = (val||"").trim();
+  if(/^\d{8}$/.test(v)) return new Date(+v.slice(0,4), +v.slice(4,6)-1, +v.slice(6,8));
+  const m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
+  if(m){
+    if(m[7]==="Z") return new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]));
+    return new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]);
+  }
+  return null;
+}
+
+/* ---------- Refresh ---------- */
+function setFeedStatus(accIdx, key, cls, msg){
+  const a = cfg.accommodations[accIdx];
+  a[key]._status = msg;
+  a[key]._statusClass = cls;
+  const el = document.getElementById("f"+accIdx+"-"+key+"-status");
+  if(el){ el.className = "feed-status "+cls; el.textContent = msg; }
+}
+async function loadFeedContent(accIdx, key){
+  const f = cfg.accommodations[accIdx][key];
+  if(!f) return {ok:false, reason:"geen feed"};
+  if(f.mode==="url"){
+    if(!f.url) return {ok:false, reason:"geen URL ingevuld"};
+    const r = await fetchViaProxies(f.url);
+    if(!r.ok) return {ok:false, reason:"geen proxy werkte", details:r.tried};
+    return {ok:true, text:r.text, via:"proxy "+r.proxy};
+  }
+  if(f.mode==="text"){
+    if(!f.text) return {ok:false, reason:"geen tekst geplakt"};
+    if(!/BEGIN:VCALENDAR/i.test(f.text)) return {ok:false, reason:"geplakte tekst is geen iCal"};
+    return {ok:true, text:f.text, via:"tekst"};
+  }
+  if(f.mode==="file"){
+    if(!f.text) return {ok:false, reason:"geen bestand gekozen"};
+    if(!/BEGIN:VCALENDAR/i.test(f.text)) return {ok:false, reason:"bestand is geen iCal"};
+    return {ok:true, text:f.text, via:"bestand "+(f.filename||"")};
+  }
+  return {ok:false, reason:"onbekende methode"};
+}
+async function refresh(){
+  const accs = cfg.accommodations;
+  const bannerArea = document.getElementById("banner-area");
+  bannerArea.innerHTML = "";
+  const statusEl = document.getElementById("status");
+  if(accs.length===0){
+    statusEl.textContent = "";
+    bannerArea.innerHTML = `<div class="banner info">Nog geen kamers geconfigureerd. Ga naar <b>Instellingen</b> om een kamer toe te voegen.</div>`;
+    events = []; render(); return;
+  }
+  statusEl.textContent = "Bezig met ophalen…";
+  const all = [];
+  const feedResults = [];
+  for(let i=0; i<accs.length; i++){
+    for(const [src,key] of [["Booking","booking"],["Airbnb","airbnb"]]){
+      const f = accs[i][key];
+      const hasAny = f && ((f.mode==="url"&&f.url)||(f.mode!=="url"&&f.text));
+      if(!hasAny){ setFeedStatus(i,key,"",""); continue; }
+      setFeedStatus(i,key,"","Bezig…");
+      const r = await loadFeedContent(i,key);
+      if(!r.ok){
+        setFeedStatus(i,key,"err","✗ "+r.reason);
+        feedResults.push({acc:accs[i].name||"(naamloos)", src, ok:false, reason:r.reason, details:r.details||[]});
+        continue;
+      }
+      let parsed;
+      try{ parsed = parseIcal(r.text); }
+      catch(e){
+        setFeedStatus(i,key,"err","✗ parseerfout: "+e.message);
+        feedResults.push({acc:accs[i].name||"(naamloos)", src, ok:false, reason:"parseerfout "+e.message});
+        continue;
+      }
+      let used = 0;
+      for(const ev of parsed){
+        const s = (ev.summary||"").toLowerCase().trim();
+        // Booking.com uses "CLOSED - Not available" for EVERY event (reservations + manual blocks
+        // look identical). So for Booking we include everything. For Airbnb we only skip the
+        // manual "Airbnb (Not available)" / "Not available" blocks and keep "Reserved" entries.
+        let isBlock = false;
+        if(src === "Airbnb"){
+          if(s === "not available" || s === "blocked" || s === "niet beschikbaar"
+             || s.includes("airbnb (not available)")
+             || s.includes("airbnb not available")){
+            isBlock = true;
+          }
+        }
+        if(isBlock) continue;
+        if(!ev.start || !ev.end) continue;
+        const record = {
+          accName: accs[i].name || "(naamloos)",
+          source: src,
+          start: ev.start,
+          end: ev.end,
+          summary: ev.summary || "",
+          description: ev.description || "",
+          uid: ev.uid || ""
+        };
+        record.people = parsePeople(record);
+        record.reservationUrl = extractReservationUrl(ev, src, accs[i]);
+        all.push(record);
+        used++;
+      }
+      setFeedStatus(i,key,"ok",`✓ ${used} reservatie(s) (${parsed.length} events) via ${r.via}`);
+      feedResults.push({acc:accs[i].name||"(naamloos)", src, ok:true, events:parsed.length, reservations:used, via:r.via});
+    }
+  }
+  events = all;
+  lastFetchLog = feedResults;
+
+  const okCount = feedResults.filter(x=>x.ok).length;
+  const errCount = feedResults.filter(x=>!x.ok).length;
+  if(feedResults.length===0){
+    bannerArea.innerHTML = `<div class="banner info">Geen feeds ingevuld. Voeg URLs, tekst of bestanden toe onder <b>Instellingen</b>.</div>`;
+  } else if(errCount===0){
+    bannerArea.innerHTML = `<div class="banner ok">✓ ${okCount} feed(s) opgehaald, ${events.length} reservatie(s) verwerkt.</div>`;
+  } else {
+    const details = feedResults.map(r => {
+      if(r.ok) return `✓ ${r.acc} · ${r.src}: ${r.reservations} reservaties (${r.via})`;
+      const d = (r.details&&r.details.length) ? "\n    · " + r.details.join("\n    · ") : "";
+      return `✗ ${r.acc} · ${r.src}: ${r.reason}${d}`;
+    }).join("\n");
+    bannerArea.innerHTML = `<div class="banner err">
+      ${errCount} feed(s) faalden, ${okCount} feed(s) gelukt (${events.length} reservatie(s)).
+      <details><summary>Toon details</summary><pre>${escapeHtml(details)}</pre></details>
+      <div style="margin-top:6px;font-size:12.5px">Tip: ga naar <b>Instellingen</b> en schakel de <i>methode</i> van een falende feed om naar <b>Tekst plakken</b> of <b>Bestand uploaden</b> — dat werkt altijd.</div>
+    </div>`;
+  }
+  statusEl.textContent = `Laatst ververst: ${new Date().toLocaleString("nl-BE")}`;
+  render();
+  renderCalendar();
+}
+document.getElementById("btn-refresh").addEventListener("click",refresh);
+document.getElementById("btn-print").addEventListener("click",()=>window.print());
+
+/* ---------- Build schedule ---------- */
+function buildSchedule(){
+  const perAccCheckins = new Map();
+  for(const ev of events){
+    if(!perAccCheckins.has(ev.accName)) perAccCheckins.set(ev.accName,[]);
+    perAccCheckins.get(ev.accName).push(stripTime(ev.start).getTime());
+  }
+  const rows = [];
+  for(const ev of events){
+    const checkout = stripTime(ev.end);
+    const ins = (perAccCheckins.get(ev.accName)||[]).slice().sort((a,b)=>a-b);
+    let nextIn = null;
+    for(const t of ins){ if(t >= checkout.getTime()){ nextIn = new Date(t); break; } }
+    rows.push({ checkout, acc:ev.accName, source:ev.source, checkin:stripTime(ev.start), nextIn });
+  }
+  const seen = new Set(); const dedup = [];
+  rows.sort((a,b)=>a.checkout-b.checkout);
+  for(const r of rows){
+    const key = r.acc + "|" + r.checkout.toISOString().slice(0,10);
+    if(seen.has(key)) continue;
+    seen.add(key); dedup.push(r);
+  }
+  return dedup;
+}
+function stripTime(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+
+/* ---------- Render ---------- */
+function refreshAccFilter(){
+  const sel = document.getElementById("filter-acc");
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Alle kamers</option>';
+  for(const a of cfg.accommodations){
+    if(!a.name) continue;
+    const o = document.createElement("option");
+    o.value = a.name; o.textContent = a.name;
+    sel.appendChild(o);
+  }
+  sel.value = cur;
+}
+document.getElementById("filter-range").addEventListener("change",render);
+document.getElementById("filter-acc").addEventListener("change",render);
+
+function render(){
+  const body = document.getElementById("schedule-body");
+  const range = document.getElementById("filter-range").value;
+  const accFilter = document.getElementById("filter-acc").value;
+  const today = stripTime(new Date());
+  const maxDate = range==="all" ? null : new Date(today.getTime() + (+range)*86400000);
+
+  const schedule = buildSchedule().filter(r=>{
+    if(accFilter && r.acc!==accFilter) return false;
+    if(maxDate && r.checkout>maxDate) return false;
+    if(r.checkout < new Date(today.getTime()-2*86400000)) return false;
+    return true;
+  });
+
+  if(schedule.length===0){
+    body.innerHTML = '<div class="empty">Geen check-outs gevonden in deze periode.<br/><span class="muted">Voeg iCal-feeds toe onder <b>Instellingen</b> en klik op <b>Vernieuwen</b>.</span></div>';
+    return;
+  }
+
+  const byMonth = new Map();
+  for(const r of schedule){
+    const k = r.checkout.getFullYear()+"-"+String(r.checkout.getMonth()+1).padStart(2,"0");
+    if(!byMonth.has(k)) byMonth.set(k,[]);
+    byMonth.get(k).push(r);
+  }
+
+  let html = "";
+  for(const [k,rows] of byMonth){
+    const [y,m] = k.split("-").map(Number);
+    const d = new Date(y,m-1,1);
+    const monthName = d.toLocaleDateString("nl-BE",{month:"long",year:"numeric"});
+    html += `<div class="month-h">${monthName}</div>`;
+    html += `<table><thead><tr>
+      <th style="width:22%">Kuisdag (check-out)</th>
+      <th>Kamer</th>
+      <th style="width:30%">Volgende gast</th>
+    </tr></thead><tbody>`;
+    for(const r of rows){
+      const past = r.checkout < today;
+      const isToday = r.checkout.getTime()===today.getTime();
+      const weekday = r.checkout.toLocaleDateString("nl-BE",{weekday:"long"});
+      const dateStr = r.checkout.toLocaleDateString("nl-BE",{day:"2-digit",month:"2-digit",year:"numeric"});
+      let nextHtml;
+      if(r.nextIn){
+        const diff = Math.round((r.nextIn - r.checkout)/86400000);
+        if(diff===0) nextHtml = `<span class="chip tight">Zelfde dag check-in</span>`;
+        else if(diff<=3) nextHtml = `<span class="chip">${r.nextIn.toLocaleDateString("nl-BE",{day:"2-digit",month:"2-digit"})} — over ${diff} ${diff===1?"dag":"dagen"}</span>`;
+        else nextHtml = `<span class="chip free">${r.nextIn.toLocaleDateString("nl-BE",{day:"2-digit",month:"2-digit"})} — ${diff} dagen leeg</span>`;
+      } else {
+        nextHtml = `<span class="chip free">Geen volgende boeking</span>`;
+      }
+      html += `<tr class="${past?"past":""} ${isToday?"today":""}">
+        <td class="date">${dateStr}<span class="weekday">${weekday}</span></td>
+        <td>${escapeHtml(r.acc)} <span class="src ${r.source==="Booking"?"bk":"ab"}">${r.source}</span></td>
+        <td>${nextHtml}</td>
+      </tr>`;
+    }
+    html += "</tbody></table>";
+  }
+  body.innerHTML = html;
+}
+
+/* ---------- Calendar ---------- */
+// Geen groen in het palet — groen is gereserveerd voor "gekuist".
+const ACC_PALETTE = [
+  "#3b49a6", // blauw
+  "#b8541a", // oranje
+  "#a2271a", // rood
+  "#5c3b82", // paars
+  "#8a6d3b", // goud-bruin
+  "#0b5aa4", // donkerblauw
+  "#b0327b", // roze-magenta
+  "#44556b", // leisteen
+];
+function accColor(accName){
+  const names = cfg.accommodations.map(a=>a.name||"(naamloos)");
+  const idx = Math.max(0, names.indexOf(accName));
+  return ACC_PALETTE[idx % ACC_PALETTE.length];
+}
+function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+function addMonths(d,n){ return new Date(d.getFullYear(), d.getMonth()+n, 1); }
+function addDays(d,n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n); }
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function dayDiff(a,b){ return Math.round((stripTime(b)-stripTime(a))/86400000); }
+function bookingKey(ev){ return (ev.accName||"?")+"|"+ymd(ev.start)+"|"+ymd(ev.end); }
+function parsePeople(ev){
+  // Probeer gast-aantal uit SUMMARY/DESCRIPTION te halen.
+  // iCal DESCRIPTION escapes \n/\,; ontsnappen voor duidelijkere matches.
+  const descU = (ev.description||"").replace(/\\n/g,"\n").replace(/\\,/g,",").replace(/\\;/g,";");
+  const txt = ((ev.summary||"") + "\n" + descU);
+  const lower = txt.toLowerCase();
+
+  // 1) "Adults: N / Children: M" — som als beide aanwezig
+  const adultsM = lower.match(/\b(?:adults?|volwassenen?)\s*[:=]\s*(\d+)/);
+  const childrenM = lower.match(/\b(?:children?|kinderen?|kids?)\s*[:=]\s*(\d+)/);
+  if(adultsM && childrenM){
+    const n = (+adultsM[1]) + (+childrenM[1]);
+    if(n>0) return n;
+  }
+
+  // 2) Expliciete "Guests: N" / "Gasten: N" / "Adults: N" / "Volwassenen: N" / "Pax: N" / "SP: N"
+  let m = lower.match(/\b(?:guests?|gasten?|personen?|pers(?:onen)?|pax|adults?|volwassenen?|sp)\s*[:=]\s*(\d+)/);
+  if(m) return +m[1];
+
+  // 3) "N guests" / "N adults" / "N volwassenen" / "N personen" / "N pax"
+  m = lower.match(/(\d+)\s*(?:guests?|gasten?|personen?|pers\b|pax|adults?|volwassenen?)/);
+  if(m) return +m[1];
+
+  // 4) "(2)" in summary — soms zet Airbnb dit er bij
+  m = (ev.summary||"").match(/\(\s*(\d+)\s*\)/);
+  if(m) return +m[1];
+
+  // 5) "x 2" / "× 2" patroon
+  m = lower.match(/[x×]\s*(\d+)/);
+  if(m) return +m[1];
+
+  return null;
+}
+function getPeople(ev){
+  const k = bookingKey(ev);
+  if(cfg.guestCounts && cfg.guestCounts[k]!=null) return cfg.guestCounts[k];
+  return ev.people ?? null;
+}
+function setPeople(ev, n){
+  if(!cfg.guestCounts) cfg.guestCounts = {};
+  const k = bookingKey(ev);
+  if(n==null || n===""||isNaN(n)) delete cfg.guestCounts[k];
+  else cfg.guestCounts[k] = +n;
+  saveCfg();
+}
+
+/* Locate all bar segments inside a week */
+function segmentsForWeek(weekStart, evts){
+  // weekStart = Monday 00:00 of that week
+  const weekEnd = addDays(weekStart, 7); // exclusive
+  const segs = [];
+  for(const ev of evts){
+    const s = stripTime(ev.start);
+    const e = stripTime(ev.end);
+    if(e <= weekStart || s >= weekEnd) continue;
+    const segStart = s < weekStart ? weekStart : s;
+    const segEnd   = e > weekEnd   ? weekEnd   : e;
+    const startCol = dayDiff(weekStart, segStart) + 1;   // 1..7
+    const spanCols = dayDiff(segStart, segEnd);          // number of days the bar spans
+    if(spanCols<=0) continue;
+    const hasStart = (segStart.getTime() === s.getTime());
+    const hasEnd   = (segEnd.getTime() === e.getTime());
+    segs.push({
+      ev,
+      startCol,
+      endCol: startCol + spanCols, // exclusive for grid-column end
+      hasStart, hasEnd
+    });
+  }
+  return segs;
+}
+function assignLanes(segs){
+  // segs assumed in a single week; sort by startCol then length
+  segs.sort((a,b)=> a.startCol-b.startCol || (b.endCol-b.startCol)-(a.endCol-a.startCol));
+  const lanes = []; // lanes[i] = last endCol used (exclusive)
+  for(const s of segs){
+    let placed = -1;
+    for(let i=0;i<lanes.length;i++){
+      if(lanes[i] <= s.startCol){ placed = i; break; }
+    }
+    if(placed<0){ lanes.push(s.endCol); placed = lanes.length-1; }
+    else lanes[placed] = s.endCol;
+    s.lane = placed;
+  }
+  return lanes.length;
+}
+
+function renderCalendar(){
+  const body = document.getElementById("cal-body");
+  const titleEl = document.getElementById("cal-title");
+  const legendEl = document.getElementById("cal-legend");
+  const bannerEl = document.getElementById("cal-banner");
+
+  titleEl.textContent = calCursor.toLocaleDateString("nl-BE",{month:"long",year:"numeric"});
+
+  // Legend
+  const used = cfg.accommodations.filter(a=>a.name).map(a=>a.name);
+  legendEl.innerHTML = used.map(n=>`<span><span class="sw" style="background:${accColor(n)}"></span>${escapeHtml(n)}</span>`).join("");
+
+  if(events.length===0){
+    bannerEl.innerHTML = `<div class="banner info" style="margin-bottom:10px">Nog geen reservaties geladen. Voeg feeds toe onder <b>Instellingen</b> en klik op <b>↻ Vernieuwen</b>.</div>`;
+  } else {
+    bannerEl.innerHTML = "";
+  }
+
+  // Compute the month's weeks: find Monday of first week, render 6 weeks (42 days)
+  const firstOfMonth = startOfMonth(calCursor);
+  // Monday = 1..Sunday = 0; we want Monday = 0
+  const dowMon = (firstOfMonth.getDay()+6)%7;
+  const gridStart = addDays(firstOfMonth, -dowMon);
+
+  const today = stripTime(new Date());
+
+  // Compute wissel days: same acc has checkout on day d and check-in on day d
+  const wisselDays = new Set();
+  const checkouts = new Map(); // ymd -> Set(acc)
+  const checkins = new Map();  // ymd -> Set(acc)
+  for(const ev of events){
+    const oKey = ymd(stripTime(ev.end));
+    const iKey = ymd(stripTime(ev.start));
+    if(!checkouts.has(oKey)) checkouts.set(oKey,new Set());
+    if(!checkins.has(iKey))  checkins.set(iKey, new Set());
+    checkouts.get(oKey).add(ev.accName);
+    checkins.get(iKey).add(ev.accName);
+  }
+  for(const [k, accs] of checkouts){
+    if(!checkins.has(k)) continue;
+    for(const acc of accs){ if(checkins.get(k).has(acc)){ wisselDays.add(k); break; } }
+  }
+
+  // Weekday header
+  const wdays = ["Ma","Di","Wo","Do","Vr","Za","Zo"];
+  let html = `<div class="cal-weekdays">${wdays.map((w,i)=>`<div class="${i>=5?'we':''}">${w}</div>`).join("")}</div><div class="cal-weeks">`;
+
+  // 6 weeks
+  for(let w=0; w<6; w++){
+    const weekStart = addDays(gridStart, w*7);
+    // stop if whole week is after month and we've already rendered a week that starts after month end
+    const weekEndExcl = addDays(weekStart,7);
+    // compute bar segments for this week
+    const segs = segmentsForWeek(weekStart, events);
+    const laneCount = assignLanes(segs);
+
+    html += `<div class="cal-week">`;
+
+    // day cells
+    for(let d=0; d<7; d++){
+      const day = addDays(weekStart, d);
+      const inMonth = day.getMonth() === calCursor.getMonth();
+      const isToday = day.getTime() === today.getTime();
+      const isWe = d>=5;
+      const isWissel = wisselDays.has(ymd(day));
+      const classes = ["day-cell"];
+      if(!inMonth) classes.push("other-month");
+      if(isToday) classes.push("today");
+      if(isWe) classes.push("weekend");
+      if(isWissel) classes.push("wissel");
+      const wissel = isWissel ? `<span class="wissel-badge" title="Check-out én check-in dezelfde dag">⇆ Wissel</span>` : "";
+      html += `<div class="${classes.join(" ")}" style="grid-column:${d+1}/${d+2};grid-row:1"><div class="day-num">${day.getDate()}${wissel}</div></div>`;
+    }
+
+    // bars — render after day cells so they layer below via explicit grid-row
+    for(const s of segs){
+      const ev = s.ev;
+      const cls = ["bar"];
+      if(s.hasStart) cls.push("start");
+      if(s.hasEnd) cls.push("end");
+      if(!s.hasStart && !s.hasEnd) cls.push("mid");
+      const isDone = isCleaningDone(ev);
+      if(isDone) cls.push("done");
+      const color = accColor(ev.accName);
+      const srcLabel = ev.source || "";
+      const ppl = getPeople(ev);
+      const pplTxt = ppl==null ? "? pers." : (ppl+" pers.");
+      const note = getNote(ev);
+      const hasNote = !!note;
+      if(hasNote) cls.push("has-note");
+      const notePreview = hasNote ? (note.length > 28 ? note.slice(0,26).replace(/\s+$/,"") + "…" : note).replace(/\n/g," · ") : "";
+      const title = `${ev.accName} — ${ev.source}\n${ev.start.toLocaleDateString("nl-BE")} → ${ev.end.toLocaleDateString("nl-BE")}${hasNote?"\n📝 "+note.replace(/\n/g," · "):""}\nKlik voor details${isDone?" · ✓ gekuist":""}`;
+      const dataKey = bookingKey(ev);
+      const notePill = hasNote ? `<span class="note-pill" title="${escapeHtml(note)}">📝 ${escapeHtml(notePreview)}</span>` : "";
+      const rightBadge = isDone
+        ? `<span class="check">✓ klaar</span>`
+        : `<span class="ppl">👤 ${escapeHtml(String(pplTxt))}</span>`;
+      html += `<div class="${cls.join(" ")}" style="--bar-bg:${color};--cstart:${s.startCol};--cend:${s.endCol};--lane:${2+s.lane}" data-bookkey="${escapeHtml(dataKey)}" title="${escapeHtml(title)}">
+        <span class="src-pill">${escapeHtml(srcLabel)}</span>
+        <span class="name">${escapeHtml(ev.accName)}</span>
+        ${notePill}
+        ${rightBadge}
+      </div>`;
+    }
+
+    // spacer row so bars always get visible even if no days extend
+    if(laneCount>0) html += `<div style="grid-column:1/8;grid-row:${2+laneCount};min-height:4px"></div>`;
+    else html += `<div style="grid-column:1/8;grid-row:2;min-height:4px"></div>`;
+
+    html += `</div>`; // end week
+  }
+
+  html += `</div>`; // end weeks
+  body.innerHTML = html;
+
+  // bind bar clicks to open modal
+  body.querySelectorAll(".bar").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const key = el.getAttribute("data-bookkey");
+      const ev = events.find(e=>bookingKey(e)===key);
+      if(!ev) return;
+      openBookingModal(ev);
+    });
+  });
+}
+
+// Toolbar bindings
+document.getElementById("cal-prev").addEventListener("click",()=>{ calCursor = addMonths(calCursor,-1); renderCalendar(); });
+document.getElementById("cal-next").addEventListener("click",()=>{ calCursor = addMonths(calCursor, 1); renderCalendar(); });
+document.getElementById("cal-today").addEventListener("click",()=>{ calCursor = startOfMonth(new Date()); renderCalendar(); });
+
+/* ---------- Cleanings (done/undone) ---------- */
+function cleaningKey(ev){ return bookingKey(ev) + "|" + ymd(stripTime(ev.end)); }
+function isCleaningDone(ev){
+  if(!cfg.cleanings) return false;
+  return !!cfg.cleanings[cleaningKey(ev)];
+}
+function markCleaningDone(ev, extra){
+  if(!cfg.cleanings) cfg.cleanings = {};
+  const rec = { at: new Date().toISOString() };
+  if(extra){
+    if(typeof extra.durationMin === "number" && isFinite(extra.durationMin) && extra.durationMin >= 0){
+      rec.durationMin = extra.durationMin;
+    }
+    if(typeof extra.kuisNote === "string" && extra.kuisNote.trim()){
+      rec.kuisNote = extra.kuisNote.trim();
+    }
+  }
+  cfg.cleanings[cleaningKey(ev)] = rec;
+  saveCfg();
+}
+function markCleaningUndone(ev){
+  if(!cfg.cleanings) return;
+  delete cfg.cleanings[cleaningKey(ev)];
+  saveCfg();
+}
+
+/* ---------- Booking modal ---------- */
+let currentModalEv = null;
+const modalEls = {
+  backdrop: document.getElementById("modal-backdrop"),
+  head:     document.getElementById("modal-head"),
+  title:    document.getElementById("modal-title"),
+  src:      document.getElementById("modal-src"),
+  close:    document.getElementById("modal-close"),
+  checkin:  document.getElementById("modal-checkin"),
+  checkout: document.getElementById("modal-checkout"),
+  nights:   document.getElementById("modal-nights"),
+  nextin:   document.getElementById("modal-nextin"),
+  people:   document.getElementById("modal-people"),
+  notifyMissing: document.getElementById("modal-notify-missing"),
+  undo:     document.getElementById("modal-undo"),
+  done:     document.getElementById("modal-done"),
+  doneBanner: document.getElementById("modal-done-banner"),
+  resLink:  document.getElementById("modal-reservation-link"),
+  notes:    document.getElementById("modal-notes"),
+  peopleAuto: document.getElementById("modal-people-auto"),
+  finishForm:    document.getElementById("modal-finish-form"),
+  duration:      document.getElementById("modal-duration"),
+  kuisNote:      document.getElementById("modal-kuis-note"),
+  finishConfirm: document.getElementById("modal-finish-confirm"),
+  finishCancel:  document.getElementById("modal-finish-cancel")
+};
+
+/* ---------- Notes storage ---------- */
+function getNote(ev){
+  if(!cfg.notes) return "";
+  return cfg.notes[bookingKey(ev)] || "";
+}
+function setNote(ev, text){
+  if(!cfg.notes) cfg.notes = {};
+  const k = bookingKey(ev);
+  const t = (text||"").trim();
+  if(t){ cfg.notes[k] = t; } else { delete cfg.notes[k]; }
+  saveCfg();
+}
+
+function openBookingModal(ev){
+  currentModalEv = ev;
+  // Header + colors
+  modalEls.title.textContent = ev.accName || "—";
+  modalEls.src.textContent = ev.source || "—";
+  const c = accColor(ev.accName);
+  modalEls.head.style.setProperty("--m-color", c);
+  modalEls.head.style.setProperty("--m-color2", shadeColor(c,-18));
+
+  // Dates
+  const fmt = d => d ? d.toLocaleDateString("nl-BE",{weekday:"short",day:"numeric",month:"short"}) : "—";
+  modalEls.checkin.textContent  = fmt(ev.start);
+  modalEls.checkout.textContent = fmt(ev.end);
+  const nights = Math.max(0, Math.round((stripTime(ev.end) - stripTime(ev.start))/86400000));
+  modalEls.nights.textContent = nights + (nights===1?" nacht":" nachten");
+
+  // Next check-in on the same accommodation (after this checkout)
+  const sameAccUpcoming = events
+    .filter(e => e.accName===ev.accName && stripTime(e.start) >= stripTime(ev.end))
+    .sort((a,b)=>a.start-b.start);
+  if(sameAccUpcoming.length){
+    const n = sameAccUpcoming[0];
+    const sameDay = ymd(stripTime(n.start)) === ymd(stripTime(ev.end));
+    modalEls.nextin.textContent = (sameDay?"⇆ Wissel · ":"") + fmt(n.start);
+  } else {
+    modalEls.nextin.textContent = "—";
+  }
+
+  // People — toont of het automatisch ingelezen is of manueel
+  const p = getPeople(ev);
+  modalEls.people.value = (p==null ? "" : String(p));
+  const manualSet = cfg.guestCounts && cfg.guestCounts[bookingKey(ev)]!=null;
+  if(p!=null && !manualSet){
+    modalEls.peopleAuto.style.display = "inline-block";
+    modalEls.peopleAuto.textContent = "✓ Automatisch ingelezen uit reservatie";
+  } else {
+    modalEls.peopleAuto.style.display = "none";
+  }
+
+  // Notes
+  modalEls.notes.value = getNote(ev);
+
+  // Reservation link — altijd tonen voor Booking/Airbnb. Voor Booking herberekenen we
+  // de URL live o.b.v. het hotel-ID dat de gebruiker intussen kan ingevuld hebben.
+  const srcLower = (ev.source||"").toLowerCase();
+  const acc = cfg.accommodations.find(a => (a.name||"(naamloos)") === ev.accName);
+  const liveUrl = extractReservationUrl(
+    { summary:ev.summary, description:ev.description, uid:ev.uid },
+    ev.source,
+    acc
+  );
+  let linkUrl = liveUrl || ev.reservationUrl || "";
+  let linkLabel = "";
+  if(srcLower.includes("booking")){
+    if(!linkUrl) linkUrl = "https://admin.booking.com/";
+    const hasDeepLink = /hotel_id=/.test(linkUrl);
+    linkLabel = hasDeepLink ? "🔗 Open deze reservatie in Booking.com" : "🔗 Open Booking extranet";
+    modalEls.resLink.className = "btn-link booking";
+  } else if(srcLower.includes("airbnb")){
+    if(!linkUrl) linkUrl = "https://www.airbnb.com/hosting/reservations";
+    linkLabel = "🔗 Open in Airbnb";
+    modalEls.resLink.className = "btn-link airbnb";
+  } else if(linkUrl){
+    linkLabel = "🔗 Open reservatie";
+    modalEls.resLink.className = "btn-link";
+  }
+  if(linkUrl){
+    modalEls.resLink.href = linkUrl;
+    modalEls.resLink.textContent = linkLabel;
+    modalEls.resLink.style.display = "inline-flex";
+  } else {
+    modalEls.resLink.style.display = "none";
+  }
+
+  // Done state
+  updateModalDoneState();
+
+  modalEls.backdrop.classList.add("show");
+}
+function closeBookingModal(){
+  hideFinishForm();
+  modalEls.backdrop.classList.remove("show");
+  currentModalEv = null;
+}
+function formatDuration(mins){
+  if(typeof mins !== "number" || !isFinite(mins) || mins < 0) return "";
+  if(mins < 60) return mins + " min";
+  const h = Math.floor(mins/60), m = mins%60;
+  return m===0 ? (h + " u") : (h + " u " + m);
+}
+function updateModalDoneState(){
+  const ev = currentModalEv;
+  if(!ev) return;
+  const done = isCleaningDone(ev);
+  const phone = normalizePhone((cfg.notify && cfg.notify.phone) || "");
+  modalEls.notifyMissing.style.display = (!done && !phone) ? "block" : "none";
+  // Altijd finish-form verbergen als we (her)openen of status wijzigen
+  hideFinishForm();
+  if(done){
+    const rec = cfg.cleanings[cleaningKey(ev)] || {};
+    const when = rec.at;
+    let whenTxt = "";
+    try{
+      const dt = new Date(when);
+      whenTxt = dt.toLocaleString("nl-BE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    }catch(e){}
+    const durTxt = formatDuration(rec.durationMin);
+    const noteTxt = rec.kuisNote ? rec.kuisNote : "";
+    let banner = `<div class="done-banner">✓ Gekuist${whenTxt?(" — "+escapeHtml(whenTxt)):""}${durTxt?(" · ⏱ "+escapeHtml(durTxt)):""}</div>`;
+    if(noteTxt){
+      banner += `<div class="done-banner" style="background:#fde047;color:#713f12;margin-top:6px">📝 Opmerking kuis: ${escapeHtml(noteTxt)}</div>`;
+    }
+    modalEls.doneBanner.innerHTML = banner;
+    modalEls.done.style.display = "none";
+    modalEls.undo.style.display = "inline-block";
+  } else {
+    modalEls.doneBanner.innerHTML = "";
+    modalEls.done.style.display = "inline-flex";
+    modalEls.undo.style.display = "none";
+  }
+}
+function showFinishForm(){
+  const ev = currentModalEv;
+  if(!ev) return;
+  // Pre-fill met bestaande waarden als die er zijn
+  const rec = (cfg.cleanings && cfg.cleanings[cleaningKey(ev)]) || {};
+  modalEls.duration.value = (typeof rec.durationMin === "number" ? String(rec.durationMin) : "");
+  modalEls.kuisNote.value = rec.kuisNote || "";
+  modalEls.finishForm.style.display = "block";
+  modalEls.done.style.display = "none";
+  modalEls.finishConfirm.style.display = "inline-flex";
+  modalEls.finishCancel.style.display = "inline-flex";
+  modalEls.undo.style.display = "none";
+  // Focus het duurveld meteen zodat de kuisvrouw snel kan typen
+  setTimeout(()=>{ modalEls.duration.focus(); }, 50);
+}
+function hideFinishForm(){
+  modalEls.finishForm.style.display = "none";
+  modalEls.finishConfirm.style.display = "none";
+  modalEls.finishCancel.style.display = "none";
+}
+
+// People input saves live and re-renders the calendar immediately.
+// (The modal is outside the calendar container, so re-rendering doesn't close it.)
+modalEls.people.addEventListener("input",()=>{
+  if(!currentModalEv) return;
+  const v = modalEls.people.value.trim();
+  setPeople(currentModalEv, v==="" ? null : +v);
+  // Zodra gebruiker manueel iets intypt verbergen we de "automatisch"-hint
+  modalEls.peopleAuto.style.display = "none";
+  renderCalendar();
+});
+
+// Notes textarea: live saven + herrenderen (zodat het 📝-icoontje op de balk verschijnt/verdwijnt)
+modalEls.notes.addEventListener("input",()=>{
+  if(!currentModalEv) return;
+  setNote(currentModalEv, modalEls.notes.value);
+  renderCalendar();
+});
+
+// Close button + backdrop click + ESC
+modalEls.close.addEventListener("click", closeBookingModal);
+modalEls.backdrop.addEventListener("click",(e)=>{ if(e.target===modalEls.backdrop) closeBookingModal(); });
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && modalEls.backdrop.classList.contains("show")) closeBookingModal(); });
+
+// Melden als klaar → open finish-form (niet meteen afmelden)
+modalEls.done.addEventListener("click",()=>{
+  if(!currentModalEv) return;
+  showFinishForm();
+});
+// Annuleer finish-form
+modalEls.finishCancel.addEventListener("click",()=>{
+  hideFinishForm();
+  updateModalDoneState();
+});
+// Quick-pick duurknoppen
+document.querySelectorAll(".dur-quick").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    modalEls.duration.value = btn.getAttribute("data-dur");
+    modalEls.duration.focus();
+  });
+});
+// Bevestig finish-form → effectief markeren als klaar + WhatsApp
+modalEls.finishConfirm.addEventListener("click",()=>{
+  const ev = currentModalEv;
+  if(!ev) return;
+  const durRaw = (modalEls.duration.value||"").trim();
+  let durationMin = null;
+  if(durRaw !== ""){
+    const n = parseInt(durRaw, 10);
+    if(!isNaN(n) && n >= 0) durationMin = n;
+  }
+  const kuisNote = (modalEls.kuisNote.value||"").trim();
+  markCleaningDone(ev, { durationMin, kuisNote });
+  hideFinishForm();
+  updateModalDoneState();
+  renderCalendar();
+  // WhatsApp deeplink met duur + eventuele opmerking
+  const phone = normalizePhone((cfg.notify && cfg.notify.phone) || "");
+  if(phone){
+    const now = new Date();
+    const hhmm = String(now.getHours()).padStart(2,"0") + ":" + String(now.getMinutes()).padStart(2,"0");
+    let text = `🧹 ${ev.accName} is klaar — ${hhmm}`;
+    if(durationMin != null) text += ` · ⏱ ${formatDuration(durationMin)}`;
+    if(kuisNote) text += `\n📝 ${kuisNote}`;
+    const url = "https://wa.me/" + phone.replace(/^\+/,"") + "?text=" + encodeURIComponent(text);
+    window.open(url, "_blank", "noopener");
+  }
+});
+modalEls.undo.addEventListener("click",()=>{
+  const ev = currentModalEv;
+  if(!ev) return;
+  markCleaningUndone(ev);
+  updateModalDoneState();
+  renderCalendar();
+});
+
+/* darken/lighten a hex color for the header gradient */
+function shadeColor(hex, percent){
+  const h = (hex||"").replace("#","");
+  if(h.length!==6) return hex;
+  const num = parseInt(h,16);
+  let r = (num>>16)&0xff, g = (num>>8)&0xff, b = num&0xff;
+  const amt = Math.round(2.55 * percent);
+  r = Math.max(0,Math.min(255,r+amt));
+  g = Math.max(0,Math.min(255,g+amt));
+  b = Math.max(0,Math.min(255,b+amt));
+  return "#" + ((1<<24) + (r<<16) + (g<<8) + b).toString(16).slice(1);
+}
+
+/* ---------- Utils ---------- */
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]); }
+
+/* ---------- Init ---------- */
+renderAccs();
+renderProxies();
+refreshAccFilter();
+render();
+renderCalendar();
+if(cfg.accommodations.some(a =>
+  (a.booking && ((a.booking.mode==="url"&&a.booking.url)||(a.booking.mode!=="url"&&a.booking.text))) ||
+  (a.airbnb  && ((a.airbnb.mode==="url"&&a.airbnb.url)||(a.airbnb.mode!=="url"&&a.airbnb.text))))){
+  refresh();
+}
+</script>
+</body>
+</html>
