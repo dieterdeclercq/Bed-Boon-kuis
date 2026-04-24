@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Kuisplanning B&amp;B 3</title>
+<title>Kuisplanning B&amp;B 4</title>
 <meta name="theme-color" content="#2f6f4e" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Kuisplan 3" />
+<meta name="apple-mobile-web-app-title" content="Kuisplan 4" />
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%232f6f4e' rx='40'/><rect x='36' y='48' width='120' height='108' fill='%23fff' rx='8'/><rect x='36' y='48' width='120' height='20' fill='%23b8541a'/><circle cx='62' cy='42' r='6' fill='%23b8541a'/><circle cx='130' cy='42' r='6' fill='%23b8541a'/><rect x='60' y='88' width='72' height='12' fill='%232f6f4e' rx='3'/><rect x='60' y='108' width='48' height='12' fill='%23b8541a' rx='3'/><rect x='60' y='128' width='84' height='12' fill='%232f6f4e' rx='3'/></svg>" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%232f6f4e' rx='12'/><rect x='12' y='16' width='40' height='36' fill='%23fff' rx='3'/><rect x='12' y='16' width='40' height='8' fill='%23b8541a'/><rect x='18' y='30' width='24' height='4' fill='%232f6f4e' rx='1'/><rect x='18' y='38' width='16' height='4' fill='%23b8541a' rx='1'/><rect x='18' y='46' width='28' height='4' fill='%232f6f4e' rx='1'/></svg>" />
@@ -325,6 +325,40 @@
     </div>
 
     <div class="card">
+      <h2>Cloud-synchronisatie <span id="sync-status-pill" class="muted" style="font-weight:400;font-size:12.5px;margin-left:6px"></span></h2>
+      <p class="muted" style="margin-top:0">
+        Als je met meer dan één toestel werkt (bv. jouw gsm + die van de kuisvrouw), zorgt cloud-sync ervoor dat alle gegevens (notities, aantal personen, afgevinkte kuisjes en opmerkingen van de kuis) automatisch tussen de toestellen worden gedeeld. Gegevens worden opgeslagen via <a href="https://jsonbin.io" target="_blank" rel="noopener">JSONBin.io</a> — gratis tot 10.000 wijzigingen per maand.
+      </p>
+      <label class="row" style="gap:10px;margin:10px 0">
+        <input type="checkbox" id="sync-enabled" />
+        <span><b>Cloud-synchronisatie aanzetten</b></span>
+      </label>
+      <div id="sync-fields">
+        <label class="row" style="gap:10px;margin:8px 0">
+          <span style="min-width:140px">Bin ID:</span>
+          <input id="sync-bin-id" type="text" placeholder="bv. 6613ab8e1234..." autocomplete="off" spellcheck="false" style="flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:monospace" />
+        </label>
+        <label class="row" style="gap:10px;margin:8px 0">
+          <span style="min-width:140px">Master Key:</span>
+          <input id="sync-api-key" type="password" placeholder="$2a$10$..." autocomplete="off" spellcheck="false" style="flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:monospace" />
+        </label>
+        <label class="row" style="gap:10px;margin:8px 0">
+          <span style="min-width:140px">Dit toestel is van:</span>
+          <select id="sync-role" style="flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px">
+            <option value="owner">Eigenaar (ik)</option>
+            <option value="cleaner">Kuisvrouw</option>
+          </select>
+        </label>
+        <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button id="sync-test">✓ Verbinding testen</button>
+          <button id="sync-now">↻ Nu synchroniseren</button>
+          <button id="sync-copy">📋 Kopieer instellingen voor kuisvrouw</button>
+        </div>
+        <p id="sync-message" class="muted" style="font-size:12.5px;margin-top:8px;min-height:18px"></p>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Data</h2>
       <div class="row">
         <button id="btn-export">⬇ Instellingen exporteren</button>
@@ -360,6 +394,19 @@
         <li>Kies <b>Beschikbaarheid → Agenda synchroniseren</b>.</li>
         <li>Klik op <b>Kalender exporteren</b> en kopieer de URL.</li>
       </ol>
+    </div>
+    <div class="card">
+      <h2>Cloud-synchronisatie opzetten (eenmalig)</h2>
+      <p>Om dezelfde gegevens op jouw gsm én op die van de kuisvrouw te zien, gebruiken we een gratis online opslag van JSONBin.io. Je doet deze stappen één keer:</p>
+      <ol>
+        <li>Ga naar <a href="https://jsonbin.io" target="_blank" rel="noopener">jsonbin.io</a> en klik op <b>Sign up</b>. Inschrijven kan met Google (één klik) of met e-mail.</li>
+        <li>Je bent nu in het dashboard. Klik linksboven op <b>API Keys</b> — kopieer je <b>X-MASTER-KEY</b> (lange string die begint met <code>$2a$10$…</code>).</li>
+        <li>Klik links op <b>Bins</b> → <b>Create bin</b> (groene knop). In het tekstveld staat wat voorbeeld-JSON — <b>vervang die door</b> <code>{"init": true}</code> (JSONBin weigert een volledig lege bin) en klik op het disketje-icoontje om op te slaan. Bovenaan verschijnt nu een <b>Bin ID</b> (een lange code) — kopieer die.</li>
+        <li>Ga terug naar deze kuisplanning-app, naar <b>Instellingen → Cloud-synchronisatie</b>. Vink <b>Aanzetten</b> aan, plak de Bin ID en Master Key, kies dat dit toestel van <b>Eigenaar</b> is. Klik op <b>Verbinding testen</b> — je zou "Verbinding OK" moeten zien.</li>
+        <li>Klik op <b>📋 Kopieer instellingen voor kuisvrouw</b> en stuur de gekopieerde tekst via WhatsApp/mail naar je kuisvrouw.</li>
+        <li>Je kuisvrouw opent de app-URL, gaat naar <b>Instellingen → Cloud-synchronisatie</b>, plakt Bin ID en Master Key, kiest <b>Kuisvrouw</b> en klikt Aanzetten. Klaar — vanaf dan worden jullie gegevens automatisch gedeeld.</li>
+      </ol>
+      <p class="muted" style="font-size:12.5px">Merk op: alles wat jij in de app typt, stuurt de app naar deze cloud-opslag. Bewaar de Master Key als een wachtwoord — iedereen die hem heeft kan de gegevens zien en wijzigen.</p>
     </div>
   </section>
 
@@ -428,7 +475,7 @@
 
 <script>
 /* ---------- Storage ---------- */
-const LS_KEY = "bnb-cleaning-planner-v4";
+const LS_KEY = "bnb-cleaning-planner-v5";
 const DEFAULT_PROXIES = [
   { id:"corsproxy",  label:"corsproxy.io",        enabled:true,  url: u => "https://corsproxy.io/?" + encodeURIComponent(u) },
   { id:"allorigins", label:"api.allorigins.win",  enabled:true,  url: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) },
@@ -436,26 +483,30 @@ const DEFAULT_PROXIES = [
   { id:"thingproxy", label:"thingproxy.freeboard.io", enabled:false, url: u => "https://thingproxy.freeboard.io/fetch/" + u },
   { id:"direct",     label:"Direct (geen proxy)", enabled:false, url: u => u }
 ];
-function defaultCfg(){ return { accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})), guestCounts: {}, cleanings: {}, notify: { phone: "" }, notes: {} }; }
+function defaultCfg(){ return {
+  accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})),
+  guestCounts: {}, cleanings: {}, notify: { phone: "" }, notes: {},
+  sync: { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" },
+  _ts: { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} }
+}; }
 function loadCfg(){
   try{
     let raw = JSON.parse(localStorage.getItem(LS_KEY));
-    // Auto-inherit config from kuisplanning2 (bnb-cleaning-planner-v3) if v3-app storage empty
+    // Auto-inherit config van v4 (bnb-cleaning-planner-v4) als v5 leeg is
     if(!raw){
-      const prev = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v3"));
+      const prev = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v4"));
       if(prev){
         raw = prev;
-        // persist to v4 so older versions stay independent afterwards
         try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){}
       }
     }
-    // fallback: nog oudere versie
     if(!raw){
-      const vOld = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v2"));
-      if(vOld){
-        raw = vOld;
-        try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){}
-      }
+      const vOld = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v3"));
+      if(vOld){ raw = vOld; try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
+    }
+    if(!raw){
+      const vOlder = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v2"));
+      if(vOlder){ raw = vOlder; try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
     }
     if(!raw) return defaultCfg();
     // migrate
@@ -475,10 +526,28 @@ function loadCfg(){
       if(typeof a.bookingUrlTemplate !== "string") a.bookingUrlTemplate = "";
     }
     if(!raw.notes) raw.notes = {};
+    if(!raw.sync) raw.sync = { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" };
+    if(!raw._ts) raw._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+    if(!raw._ts.guestCounts) raw._ts.guestCounts = {};
+    if(!raw._ts.cleanings)   raw._ts.cleanings   = {};
+    if(!raw._ts.notes)       raw._ts.notes       = {};
     return raw;
   } catch(e){ return defaultCfg(); }
 }
-function saveCfg(){ localStorage.setItem(LS_KEY, JSON.stringify(cfg)); }
+function saveCfg(opts){
+  localStorage.setItem(LS_KEY, JSON.stringify(cfg));
+  if(!opts || opts.sync !== false) scheduleCloudPush();
+}
+function stampTs(section, key){
+  if(!cfg._ts) cfg._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+  const now = Date.now();
+  if(key === undefined){
+    cfg._ts[section] = now;
+  } else {
+    if(!cfg._ts[section]) cfg._ts[section] = {};
+    cfg._ts[section][key] = now;
+  }
+}
 let cfg = loadCfg();
 let events = [];
 let lastFetchLog = []; // per-feed {acc, src, status, detail}
@@ -569,25 +638,25 @@ function renderAccs(){
 }
 function bindAccEvents(){
   accsEl.querySelectorAll("input.name").forEach(el=>{
-    el.addEventListener("input",()=>{ cfg.accommodations[+el.dataset.i].name = el.value; saveCfg(); refreshAccFilter(); });
+    el.addEventListener("input",()=>{ cfg.accommodations[+el.dataset.i].name = el.value; stampTs("accommodations"); saveCfg(); refreshAccFilter(); });
   });
   accsEl.querySelectorAll("select[data-mode]").forEach(el=>{
     el.addEventListener("change",()=>{
       const [i,k] = el.dataset.mode.split("|");
       cfg.accommodations[+i][k].mode = el.value;
-      saveCfg(); renderAccs();
+      stampTs("accommodations"); saveCfg(); renderAccs();
     });
   });
   accsEl.querySelectorAll("input[data-url]").forEach(el=>{
     el.addEventListener("input",()=>{
       const [i,k] = el.dataset.url.split("|");
-      cfg.accommodations[+i][k].url = el.value.trim(); saveCfg();
+      cfg.accommodations[+i][k].url = el.value.trim(); stampTs("accommodations"); saveCfg();
     });
   });
   accsEl.querySelectorAll("textarea[data-text]").forEach(el=>{
     el.addEventListener("input",()=>{
       const [i,k] = el.dataset.text.split("|");
-      cfg.accommodations[+i][k].text = el.value; saveCfg();
+      cfg.accommodations[+i][k].text = el.value; stampTs("accommodations"); saveCfg();
       const ok = /BEGIN:VCALENDAR/i.test(el.value);
       const statusEl = el.nextElementSibling;
       if(statusEl){
@@ -607,7 +676,7 @@ function bindAccEvents(){
         r.onload = () => {
           cfg.accommodations[+i][k].text = r.result;
           cfg.accommodations[+i][k].filename = f.name;
-          saveCfg(); renderAccs();
+          stampTs("accommodations"); saveCfg(); renderAccs();
         };
         r.readAsText(f);
       };
@@ -618,7 +687,7 @@ function bindAccEvents(){
     el.addEventListener("click",()=>{
       if(!confirm("Deze kamer verwijderen?")) return;
       cfg.accommodations.splice(+el.dataset.del,1);
-      saveCfg(); renderAccs(); refreshAccFilter(); render();
+      stampTs("accommodations"); saveCfg(); renderAccs(); refreshAccFilter(); render();
     });
   });
   accsEl.querySelectorAll("input[data-hotelid]").forEach(el=>{
@@ -628,14 +697,14 @@ function bindAccEvents(){
       const clean = (el.value||"").replace(/[^\d]/g,"");
       if(clean !== el.value) el.value = clean;
       cfg.accommodations[i].bookingHotelId = clean;
-      saveCfg();
+      stampTs("accommodations"); saveCfg();
     });
   });
   accsEl.querySelectorAll("input[data-urltpl]").forEach(el=>{
     el.addEventListener("input",()=>{
       const i = +el.dataset.urltpl;
       cfg.accommodations[i].bookingUrlTemplate = (el.value||"").trim();
-      saveCfg();
+      stampTs("accommodations"); saveCfg();
     });
   });
 }
@@ -647,7 +716,7 @@ document.getElementById("btn-add-acc").addEventListener("click",()=>{
     booking:{mode:"url",url:"",text:"",filename:""},
     airbnb: {mode:"url",url:"",text:"",filename:""}
   });
-  saveCfg(); renderAccs(); refreshAccFilter();
+  stampTs("accommodations"); saveCfg(); renderAccs(); refreshAccFilter();
 });
 
 /* ---------- Proxy list ---------- */
@@ -669,7 +738,7 @@ function renderProxies(){
       const existing = cfg.proxies.find(x=>x.id===id);
       if(existing) existing.enabled = inp.checked;
       else cfg.proxies.push({id, enabled:inp.checked});
-      saveCfg();
+      stampTs("proxies"); saveCfg();
     });
   });
 }
@@ -681,7 +750,7 @@ notifyPhoneEl.value = (cfg.notify && cfg.notify.phone) || "";
 notifyPhoneEl.addEventListener("input",()=>{
   if(!cfg.notify) cfg.notify = {};
   cfg.notify.phone = notifyPhoneEl.value.trim();
-  saveCfg();
+  stampTs("notify"); saveCfg();
 });
 function normalizePhone(p){
   return (p||"").replace(/[^\d+]/g,"");
@@ -1140,6 +1209,7 @@ function setPeople(ev, n){
   const k = bookingKey(ev);
   if(n==null || n===""||isNaN(n)) delete cfg.guestCounts[k];
   else cfg.guestCounts[k] = +n;
+  stampTs("guestCounts", k);
   saveCfg();
 }
 
@@ -1332,12 +1402,16 @@ function markCleaningDone(ev, extra){
       rec.kuisNote = extra.kuisNote.trim();
     }
   }
-  cfg.cleanings[cleaningKey(ev)] = rec;
+  const k = cleaningKey(ev);
+  cfg.cleanings[k] = rec;
+  stampTs("cleanings", k);
   saveCfg();
 }
 function markCleaningUndone(ev){
   if(!cfg.cleanings) return;
-  delete cfg.cleanings[cleaningKey(ev)];
+  const k = cleaningKey(ev);
+  delete cfg.cleanings[k];
+  stampTs("cleanings", k);
   saveCfg();
 }
 
@@ -1378,6 +1452,7 @@ function setNote(ev, text){
   const k = bookingKey(ev);
   const t = (text||"").trim();
   if(t){ cfg.notes[k] = t; } else { delete cfg.notes[k]; }
+  stampTs("notes", k);
   saveCfg();
 }
 
@@ -1614,6 +1689,262 @@ function shadeColor(hex, percent){
 /* ---------- Utils ---------- */
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]); }
 
+/* ---------- Cloud Sync (JSONBin.io) ---------- */
+const SYNC = {
+  pushTimer: null,
+  pullTimer: null,
+  inFlight: false,
+  suppressPushOnce: false
+};
+const syncEls = {
+  enabled:  document.getElementById("sync-enabled"),
+  binId:    document.getElementById("sync-bin-id"),
+  apiKey:   document.getElementById("sync-api-key"),
+  role:     document.getElementById("sync-role"),
+  fields:   document.getElementById("sync-fields"),
+  test:     document.getElementById("sync-test"),
+  now:      document.getElementById("sync-now"),
+  copy:     document.getElementById("sync-copy"),
+  message:  document.getElementById("sync-message"),
+  pill:     document.getElementById("sync-status-pill")
+};
+
+function syncEnabled(){ return !!(cfg.sync && cfg.sync.enabled && cfg.sync.binId && cfg.sync.apiKey); }
+function syncUrl(){
+  return "https://api.jsonbin.io/v3/b/" + encodeURIComponent((cfg.sync.binId||"").trim());
+}
+function syncHeaders(){
+  return { "Content-Type":"application/json", "X-Master-Key": (cfg.sync.apiKey||"").trim() };
+}
+function setSyncMessage(msg, kind){
+  if(!syncEls.message) return;
+  syncEls.message.textContent = msg||"";
+  syncEls.message.style.color = kind==="err" ? "#a2271a" : kind==="ok" ? "#1d6b3d" : "";
+}
+function setSyncPill(){
+  if(!syncEls.pill) return;
+  if(!syncEnabled()){ syncEls.pill.textContent = "(uit)"; syncEls.pill.style.color=""; return; }
+  if(SYNC.inFlight){ syncEls.pill.textContent = "↻ bezig…"; syncEls.pill.style.color="#6b7280"; return; }
+  if(cfg.sync.lastStatus === "err"){ syncEls.pill.textContent = "⚠ probleem"; syncEls.pill.style.color="#a2271a"; return; }
+  const at = cfg.sync.lastAt || 0;
+  if(!at){ syncEls.pill.textContent = "aan"; syncEls.pill.style.color="#1d6b3d"; return; }
+  const ago = Math.max(0, Math.round((Date.now()-at)/1000));
+  let txt;
+  if(ago < 60) txt = "✓ net gesynchroniseerd";
+  else if(ago < 3600) txt = "✓ " + Math.round(ago/60) + " min geleden";
+  else txt = "✓ " + Math.round(ago/3600) + " u geleden";
+  syncEls.pill.textContent = txt;
+  syncEls.pill.style.color="#1d6b3d";
+}
+setInterval(setSyncPill, 30000);
+
+function mergeTsObjects(localObj, localTs, remoteObj, remoteTs){
+  // Merge per-key. Keep newer value based on _ts. Undefined/absent is "empty".
+  const merged = {};
+  const mergedTs = {};
+  const keys = new Set([...Object.keys(localObj||{}), ...Object.keys(remoteObj||{}), ...Object.keys(localTs||{}), ...Object.keys(remoteTs||{})]);
+  for(const k of keys){
+    const lt = (localTs && localTs[k]) || 0;
+    const rt = (remoteTs && remoteTs[k]) || 0;
+    const lv = localObj && (k in localObj) ? localObj[k] : undefined;
+    const rv = remoteObj && (k in remoteObj) ? remoteObj[k] : undefined;
+    if(rt > lt){
+      // Take remote
+      if(rv !== undefined) merged[k] = rv;
+      mergedTs[k] = rt;
+    } else {
+      if(lv !== undefined) merged[k] = lv;
+      mergedTs[k] = lt;
+    }
+  }
+  return { data: merged, ts: mergedTs };
+}
+
+function mergeConfigs(local, remote){
+  // Returns merged cfg + whether we changed vs local.
+  if(!remote || typeof remote !== "object") return { merged: local, changedFromLocal:false };
+  const lt = local._ts || {};
+  const rt = remote._ts || {};
+  const merged = JSON.parse(JSON.stringify(local));
+  merged._ts = merged._ts || { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+
+  // Whole-object sections: accommodations, proxies, notify → newer _ts wins
+  for(const sec of ["accommodations","proxies","notify"]){
+    const ltv = lt[sec] || 0, rtv = rt[sec] || 0;
+    if(rtv > ltv){
+      merged[sec] = remote[sec];
+      merged._ts[sec] = rtv;
+    } else {
+      merged._ts[sec] = ltv;
+    }
+  }
+
+  // Per-key sections: guestCounts, cleanings, notes
+  for(const sec of ["guestCounts","cleanings","notes"]){
+    const res = mergeTsObjects(local[sec]||{}, (lt[sec]||{}), remote[sec]||{}, (rt[sec]||{}));
+    merged[sec] = res.data;
+    merged._ts[sec] = res.ts;
+  }
+
+  // Did anything change compared to local?
+  const changed = JSON.stringify(stripLocalOnlyFields(local)) !== JSON.stringify(stripLocalOnlyFields(merged));
+  return { merged, changedFromLocal: changed };
+}
+
+function stripLocalOnlyFields(c){
+  // Remove fields we don't want to send to cloud (sync credentials themselves)
+  const copy = JSON.parse(JSON.stringify(c||{}));
+  if(copy.sync){
+    copy.sync = { /* strip credentials, keep only enabled-state for reference */ };
+  }
+  return copy;
+}
+
+async function cloudFetch(){
+  const url = syncUrl() + "/latest";
+  const res = await fetch(url, { method:"GET", headers: syncHeaders(), cache:"no-store" });
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  const body = await res.json();
+  // JSONBin wraps in { record: ... }
+  return body && body.record ? body.record : body;
+}
+async function cloudPut(payload){
+  const url = syncUrl();
+  const res = await fetch(url, { method:"PUT", headers: syncHeaders(), body: JSON.stringify(payload) });
+  if(!res.ok){
+    const t = await res.text().catch(()=>"");
+    throw new Error("HTTP " + res.status + (t?(" — "+t.slice(0,200)):""));
+  }
+  return true;
+}
+
+async function cloudSyncOnce(){
+  if(!syncEnabled() || SYNC.inFlight) return;
+  SYNC.inFlight = true; setSyncPill();
+  try{
+    let remote = null;
+    try{ remote = await cloudFetch(); } catch(e){
+      // 404 = bin empty or unreachable. Try to create with current data.
+      if(/HTTP 404|HTTP 400/.test(e.message)){
+        remote = null;
+      } else { throw e; }
+    }
+    const { merged, changedFromLocal } = mergeConfigs(cfg, remote || {});
+    if(changedFromLocal){
+      // Pull: adopt merged locally
+      cfg = merged;
+      saveCfg({ sync:false });
+      // Herteken de zichtbare schermen zodat nieuwe data direct zichtbaar is
+      try{ renderAccs(); }catch(e){}
+      try{ refreshAccFilter(); }catch(e){}
+      try{ render(); }catch(e){}
+      try{ renderCalendar(); }catch(e){}
+    }
+    // Push merged back (so remote is at least as up-to-date)
+    await cloudPut(stripLocalOnlyFields(merged));
+    cfg.sync.lastAt = Date.now();
+    cfg.sync.lastStatus = "ok";
+    saveCfg({ sync:false });
+    setSyncMessage("✓ Gesynchroniseerd om " + new Date().toLocaleTimeString("nl-BE",{hour:"2-digit",minute:"2-digit"}), "ok");
+  } catch(e){
+    cfg.sync.lastStatus = "err";
+    saveCfg({ sync:false });
+    setSyncMessage("⚠ Synchronisatie mislukt: " + e.message, "err");
+  } finally {
+    SYNC.inFlight = false;
+    setSyncPill();
+  }
+}
+
+function scheduleCloudPush(){
+  if(!syncEnabled()) return;
+  if(SYNC.pushTimer) clearTimeout(SYNC.pushTimer);
+  SYNC.pushTimer = setTimeout(()=>{ cloudSyncOnce(); }, 2000);
+}
+function schedulePeriodicPull(){
+  if(SYNC.pullTimer) clearInterval(SYNC.pullTimer);
+  SYNC.pullTimer = setInterval(()=>{
+    if(syncEnabled() && !SYNC.inFlight && !document.hidden) cloudSyncOnce();
+  }, 20000);
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden && syncEnabled()) cloudSyncOnce();
+});
+
+/* Wire up sync UI */
+function renderSyncUi(){
+  syncEls.enabled.checked = !!(cfg.sync && cfg.sync.enabled);
+  syncEls.binId.value  = (cfg.sync && cfg.sync.binId)  || "";
+  syncEls.apiKey.value = (cfg.sync && cfg.sync.apiKey) || "";
+  syncEls.role.value   = (cfg.sync && cfg.sync.role)   || "owner";
+  syncEls.fields.style.opacity = syncEls.enabled.checked ? "1" : "0.55";
+  setSyncPill();
+}
+renderSyncUi();
+schedulePeriodicPull();
+
+syncEls.enabled.addEventListener("change",()=>{
+  if(!cfg.sync) cfg.sync = {};
+  cfg.sync.enabled = syncEls.enabled.checked;
+  saveCfg({ sync:false });
+  renderSyncUi();
+  if(syncEnabled()) cloudSyncOnce();
+});
+syncEls.binId.addEventListener("input",()=>{
+  if(!cfg.sync) cfg.sync = {};
+  cfg.sync.binId = syncEls.binId.value.trim();
+  saveCfg({ sync:false });
+});
+syncEls.apiKey.addEventListener("input",()=>{
+  if(!cfg.sync) cfg.sync = {};
+  cfg.sync.apiKey = syncEls.apiKey.value.trim();
+  saveCfg({ sync:false });
+});
+syncEls.role.addEventListener("change",()=>{
+  if(!cfg.sync) cfg.sync = {};
+  cfg.sync.role = syncEls.role.value;
+  saveCfg({ sync:false });
+});
+syncEls.test.addEventListener("click", async ()=>{
+  if(!cfg.sync || !cfg.sync.binId || !cfg.sync.apiKey){
+    setSyncMessage("Vul eerst Bin ID en Master Key in.", "err"); return;
+  }
+  setSyncMessage("Bezig met testen…");
+  try{
+    await cloudFetch();
+    setSyncMessage("✓ Verbinding OK — we kunnen de cloud lezen.", "ok");
+  } catch(e){
+    if(/HTTP 404/.test(e.message)){
+      // Empty bin is OK — try a write
+      try{
+        await cloudPut({ hello: "kuisplanning", at: Date.now() });
+        setSyncMessage("✓ Verbinding OK — bin was leeg, eerste schrijf gelukt.", "ok");
+      } catch(e2){
+        setSyncMessage("⚠ Lezen lukt niet en schrijven ook niet: " + e2.message, "err");
+      }
+    } else {
+      setSyncMessage("⚠ Probleem: " + e.message + " — controleer Bin ID en Master Key.", "err");
+    }
+  }
+});
+syncEls.now.addEventListener("click",()=>{ cloudSyncOnce(); });
+syncEls.copy.addEventListener("click", async ()=>{
+  const txt = "Kuisplanning-sync instellingen\n"
+    + "Bin ID: " + (cfg.sync.binId||"(leeg)") + "\n"
+    + "Master Key: " + (cfg.sync.apiKey||"(leeg)") + "\n\n"
+    + "Plak deze gegevens in de kuisplanning-app onder Instellingen → Cloud-synchronisatie, kies 'Kuisvrouw' en vink Aanzetten aan.";
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(txt);
+      setSyncMessage("✓ Instellingen gekopieerd — plak ze in een bericht aan de kuisvrouw.", "ok");
+    } else {
+      window.prompt("Kopieer handmatig:", txt);
+    }
+  } catch(e){
+    window.prompt("Kopieer handmatig:", txt);
+  }
+});
+
 /* ---------- Init ---------- */
 renderAccs();
 renderProxies();
@@ -1624,6 +1955,10 @@ if(cfg.accommodations.some(a =>
   (a.booking && ((a.booking.mode==="url"&&a.booking.url)||(a.booking.mode!=="url"&&a.booking.text))) ||
   (a.airbnb  && ((a.airbnb.mode==="url"&&a.airbnb.url)||(a.airbnb.mode!=="url"&&a.airbnb.text))))){
   refresh();
+}
+// Eerste cloud-sync direct bij opstarten — zo krijgt de kuisvrouw meteen de laatste gegevens
+if(syncEnabled()){
+  setTimeout(()=>cloudSyncOnce(), 300);
 }
 </script>
 </body>
