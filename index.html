@@ -69,12 +69,6 @@
   .feed-status{margin-top:6px;font-size:12px;min-height:18px}
   .feed-status.ok{color:var(--ok)}
   .feed-status.err{color:var(--err)}
-  .hotel-id-row{margin-top:10px;padding:10px 12px;background:#f3f7ff;border:1px solid #d6e2f3;border-radius:8px}
-  .hotel-id-row label{display:block;font-size:12.5px;color:#234;margin-bottom:5px;font-weight:600}
-  .hotel-id-row label .muted{font-weight:400}
-  .hotel-id-row input{width:180px;max-width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  .hotel-id-row .hotel-id-help{margin-top:6px;font-size:11.5px;line-height:1.4}
-  .hotel-id-row code{background:#fff;padding:1px 5px;border-radius:3px;border:1px solid #dce6f5;font-size:11px}
   .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .muted{color:var(--muted);font-size:13px}
   .hint{background:#fff8e7;border:1px solid #f1e2b6;color:#6e5a18;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px}
@@ -219,6 +213,92 @@
   .notify-hint{font-size:12px;color:var(--muted);margin-top:6px}
   .notify-missing{background:#fff8e7;border:1px solid #f1e2b6;color:#6e5a18;border-radius:10px;padding:10px 12px;font-size:13px;margin:8px 0}
 
+  /* ---------- Mobile layout (telefoons en smalle schermen) ---------- */
+  @media (max-width:760px){
+    body{font-size:14.5px}
+    .wrap{padding:10px}
+    /* Header compacter en op één regel als het past */
+    header{flex-direction:column;align-items:stretch;gap:8px}
+    header h1{font-size:18px;margin:0}
+    header .sub{font-size:12px}
+    header .btns{display:flex;gap:6px;justify-content:flex-end}
+    header .btns button{padding:8px 12px;font-size:13.5px;flex:1}
+    /* Tabs als horizontale scroll als ze niet passen */
+    .tabs{gap:4px;font-size:13px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{padding:8px 10px;white-space:nowrap;flex:0 0 auto}
+    .card{padding:14px;border-radius:12px}
+    /* Kalender-toolbar: navigatie samen, titel daaronder */
+    .cal-toolbar{gap:6px;margin-bottom:10px;align-items:center}
+    .cal-toolbar h2{font-size:18px;flex:1 1 100%;order:-1;margin:0 0 4px;text-align:center}
+    .cal-toolbar button{padding:8px 12px;font-size:14px;min-height:36px}
+    .cal-toolbar #cal-prev,.cal-toolbar #cal-next{flex:0 0 auto}
+    .cal-toolbar #cal-today{flex:1}
+    .cal-legend{margin-left:0;font-size:11px;gap:6px 10px;flex:1 1 100%;justify-content:flex-start}
+    .cal-legend .sw{width:12px;height:10px;margin-right:3px}
+    /* Weekdagnamen kleiner */
+    .cal-weekdays > div{padding:6px 2px;font-size:10px;letter-spacing:.6px}
+    /* Dagcellen compacter */
+    .cal-week{padding-bottom:4px}
+    .day-cell{padding:4px 3px 2px;min-height:32px}
+    .day-num{font-size:12px;gap:3px}
+    .day-num .n{min-width:16px;font-size:12px}
+    .day-cell.today .day-num .n{width:20px;height:20px;font-size:11px}
+    .wissel-badge{font-size:7.5px;padding:2px 4px;letter-spacing:.4px}
+    /* Reservatiebalken compacter */
+    .bar{
+      margin:1px 2px;
+      padding:2px 5px;
+      font-size:11px;
+      min-height:22px;
+      gap:3px;
+    }
+    .bar.start{padding-left:8px;clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%)}
+    .bar.end{padding-right:8px;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%)}
+    .bar.start.end{padding-left:8px;padding-right:8px;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,6px 100%,0 50%)}
+    .bar .src-pill{display:none}
+    .bar .ppl{font-size:10px;padding:1px 5px}
+    .bar .check{font-size:10px;padding:1px 5px}
+    .bar .note-pill{font-size:10px;padding:1px 5px;max-width:60px}
+    .bar .name{font-size:11px}
+    /* Kuislijst-tabel: betere mobile layout */
+    .controls{flex-direction:column;align-items:stretch;gap:8px}
+    .controls > label{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+    .controls select{width:100%;padding:9px 10px;font-size:14.5px}
+    table{font-size:13px}
+    table th,table td{padding:8px 6px}
+    .month-h{font-size:15px;padding:8px 4px}
+    /* Modal vult bijna het hele scherm */
+    .modal-backdrop{padding:6px;align-items:flex-end}
+    .modal{max-width:100%;width:100%;max-height:96vh;overflow-y:auto;border-radius:14px 14px 8px 8px;animation:none}
+    .modal-head{padding:14px 14px 12px}
+    .modal-body{padding:14px}
+    .modal-actions{flex-wrap:wrap;gap:6px;padding:12px 14px}
+    .modal-actions button,.modal-actions .btn-link{flex:1 1 auto;min-width:0;padding:11px 12px;font-size:14px;justify-content:center}
+    .modal-actions .spacer{display:none}
+    .btn-done,.btn-undone{font-size:14.5px;padding:11px 14px}
+    /* Inputs in modal: minimaal 16px (anders zoomt iOS automatisch in) */
+    .modal-body input,.modal-body textarea,.modal-body select{font-size:16px !important}
+    /* Notitie-pil mag breder worden zodat de tekst leesbaar blijft */
+    .bar .note-pill{max-width:100px}
+    /* Instellingen-cards: rijen wrappen netjes */
+    .row{flex-wrap:wrap;gap:8px}
+    .row > span,.row > label > span{min-width:0 !important}
+    .acc input.name{font-size:15px;padding:9px 11px}
+    .feed input,.feed select,.feed textarea{font-size:14.5px}
+  }
+  @media (max-width:380px){
+    .wrap{padding:8px}
+    .bar .ppl{display:none}
+    .day-cell{padding:3px 2px 1px;min-height:28px}
+    .cal-weekdays > div{font-size:9.5px;padding:5px 1px}
+    .day-num{font-size:11px}
+    .day-num .n{min-width:14px;font-size:11px}
+    .day-cell.today .day-num .n{width:18px;height:18px;font-size:10.5px}
+    .bar{font-size:10px;padding:1px 4px;min-height:18px}
+    .bar .name{font-size:10px}
+  }
+
   @media print{
     body{background:#fff}
     .wrap{max-width:none;padding:0}
@@ -311,11 +391,13 @@
     <div class="card">
       <h2>Notificaties</h2>
       <p class="muted" style="margin-top:0">Wanneer de kuisvrouw een kamer afvinkt, opent automatisch WhatsApp met een kant-en-klaar bericht naar jouw nummer.</p>
-      <label class="row" style="gap:10px">
+      <label class="row" style="gap:10px;flex-wrap:wrap">
         <span style="min-width:170px">WhatsApp-nummer:</span>
-        <input id="notify-phone" type="tel" placeholder="+32 475 12 34 56" value="" style="flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+        <input id="notify-phone" type="tel" placeholder="+32 475 12 34 56" value="" style="flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+        <button id="btn-whatsapp-test" type="button">Testbericht</button>
       </label>
-      <p class="notify-hint">Inclusief landcode, spaties en koppeltekens mogen. Voorbeeld voor België: <code>+32 475 12 34 56</code>.</p>
+      <p class="notify-hint">Inclusief landcode, spaties en koppeltekens mogen. Voorbeeld voor België: <code>+32 475 12 34 56</code>. Klik op <b>Testbericht</b> om te controleren of WhatsApp correct opent op dit toestel.</p>
+      <p id="whatsapp-test-msg" class="muted" style="font-size:12.5px;margin-top:6px;min-height:18px"></p>
     </div>
 
     <div class="card">
@@ -359,10 +441,9 @@
     </div>
 
     <div class="card">
-      <h2>Data</h2>
+      <h2>Reset</h2>
+      <p class="muted" style="margin-top:0;font-size:13px">Wis alle lokale instellingen op dit toestel. Cloud-data blijft staan.</p>
       <div class="row">
-        <button id="btn-export">⬇ Instellingen exporteren</button>
-        <button id="btn-import">⬆ Instellingen importeren</button>
         <button class="danger" id="btn-clear">Alles wissen</button>
       </div>
     </div>
@@ -444,26 +525,12 @@
       <!-- Finish-form: only visible after clicking "Melden als klaar" -->
       <div id="modal-finish-form" style="display:none;border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
         <div class="field">
-          <label for="modal-duration">Hoeveel tijd heeft de kuis geduurd? (minuten)</label>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
-            <button type="button" class="small dur-quick" data-dur="15">15 min</button>
-            <button type="button" class="small dur-quick" data-dur="30">30 min</button>
-            <button type="button" class="small dur-quick" data-dur="45">45 min</button>
-            <button type="button" class="small dur-quick" data-dur="60">1 uur</button>
-            <button type="button" class="small dur-quick" data-dur="75">1 u 15</button>
-            <button type="button" class="small dur-quick" data-dur="90">1 u 30</button>
-            <button type="button" class="small dur-quick" data-dur="120">2 uur</button>
-          </div>
-          <input type="number" id="modal-duration" min="0" step="1" placeholder="bv. 45" />
-        </div>
-        <div class="field">
           <label for="modal-kuis-note">Opmerkingen voor de eigenaar (bv. glas gebroken, gordijn kapot, iets vergeten…)</label>
           <textarea id="modal-kuis-note" rows="3" placeholder="Laat leeg als er niets bijzonders is."></textarea>
         </div>
       </div>
     </div>
     <div class="modal-actions">
-      <a id="modal-reservation-link" class="btn-link" href="#" target="_blank" rel="noopener" style="display:none">🔗 Open reservatie</a>
       <button class="btn-undone" id="modal-undo" style="display:none">Ongedaan maken</button>
       <div class="spacer"></div>
       <button id="modal-finish-cancel" style="display:none">Annuleer</button>
@@ -522,8 +589,10 @@ function loadCfg(){
         }
         if(!a[k]) a[k] = { mode:"url", url:"", text:"", filename:"" };
       }
-      if(typeof a.bookingHotelId !== "string") a.bookingHotelId = "";
-      if(typeof a.bookingUrlTemplate !== "string") a.bookingUrlTemplate = "";
+      // Verwijder oude velden van vorige versies (hotel-ID en URL-sjabloon
+      // worden niet meer gebruikt sinds we directe reservatie-links hebben weggehaald).
+      delete a.bookingHotelId;
+      delete a.bookingUrlTemplate;
     }
     if(!raw.notes) raw.notes = {};
     if(!raw.sync) raw.sync = { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" };
@@ -531,6 +600,26 @@ function loadCfg(){
     if(!raw._ts.guestCounts) raw._ts.guestCounts = {};
     if(!raw._ts.cleanings)   raw._ts.cleanings   = {};
     if(!raw._ts.notes)       raw._ts.notes       = {};
+    // Als er al data is van een vorige versie zonder _ts, stempel met huidige tijd
+    // zodat deze data andere toestellen (standaard _ts = 0) kan overschrijven bij sync.
+    const _now = Date.now();
+    let _stamped = false;
+    if(raw._ts.accommodations === 0 && Array.isArray(raw.accommodations) && raw.accommodations.length > 0){
+      raw._ts.accommodations = _now; _stamped = true;
+    }
+    if(raw._ts.notify === 0 && raw.notify && raw.notify.phone){
+      raw._ts.notify = _now; _stamped = true;
+    }
+    for(const k of Object.keys(raw.guestCounts||{})){
+      if(!(k in raw._ts.guestCounts)){ raw._ts.guestCounts[k] = _now; _stamped = true; }
+    }
+    for(const k of Object.keys(raw.cleanings||{})){
+      if(!(k in raw._ts.cleanings)){ raw._ts.cleanings[k] = _now; _stamped = true; }
+    }
+    for(const k of Object.keys(raw.notes||{})){
+      if(!(k in raw._ts.notes)){ raw._ts.notes[k] = _now; _stamped = true; }
+    }
+    if(_stamped){ try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
     return raw;
   } catch(e){ return defaultCfg(); }
 }
@@ -586,20 +675,6 @@ function feedBlock(accIdx, src){
   }
   const status = f._status || "";
   const statusClass = f._statusClass || "";
-  const hotelIdRow = src==="Booking"
-    ? `<div class="hotel-id-row">
-         <label for="${idBase}-hotelid">Booking hotel-ID (optioneel) <span class="muted">— voor directe link naar reservatie</span></label>
-         <input id="${idBase}-hotelid" type="text" inputmode="numeric" placeholder="bv. 1234567" value="${escapeHtml(a.bookingHotelId||"")}" data-hotelid="${accIdx}" />
-         <div class="muted hotel-id-help">Vind je in de URL van <b>admin.booking.com</b> als <code>hotel_id=…</code>.</div>
-         <label style="margin-top:10px" for="${idBase}-urltpl">URL-sjabloon (optioneel) <span class="muted">— plak hier de echte URL uit je browser</span></label>
-         <input id="${idBase}-urltpl" type="text" placeholder="https://admin.booking.com/…?hotel_id={hotel_id}&amp;res_id={res_id}" value="${escapeHtml(a.bookingUrlTemplate||"")}" data-urltpl="${accIdx}" style="width:100%" />
-         <div class="muted hotel-id-help">
-           Als het standaardsjabloon niet werkt: log in op admin.booking.com, klik op een reservatie, kopieer de volledige URL
-           uit je browser-balk, en vervang het nummer na <code>hotel_id=</code> door <code>{hotel_id}</code> en het nummer na <code>res_id=</code>
-           (of <code>reservation=</code>) door <code>{res_id}</code>. Laat leeg om de standaard te gebruiken.
-         </div>
-       </div>`
-    : "";
   return `<div class="feed">
     <div class="feed-top">
       <span class="tag ${tagClass}">${src}</span>
@@ -613,7 +688,6 @@ function feedBlock(accIdx, src){
     </div>
     ${inner}
     <div class="feed-status ${statusClass}" id="${idBase}-status">${escapeHtml(status)}</div>
-    ${hotelIdRow}
   </div>`;
 }
 function renderAccs(){
@@ -690,29 +764,10 @@ function bindAccEvents(){
       stampTs("accommodations"); saveCfg(); renderAccs(); refreshAccFilter(); render();
     });
   });
-  accsEl.querySelectorAll("input[data-hotelid]").forEach(el=>{
-    el.addEventListener("input",()=>{
-      const i = +el.dataset.hotelid;
-      // keep only digits
-      const clean = (el.value||"").replace(/[^\d]/g,"");
-      if(clean !== el.value) el.value = clean;
-      cfg.accommodations[i].bookingHotelId = clean;
-      stampTs("accommodations"); saveCfg();
-    });
-  });
-  accsEl.querySelectorAll("input[data-urltpl]").forEach(el=>{
-    el.addEventListener("input",()=>{
-      const i = +el.dataset.urltpl;
-      cfg.accommodations[i].bookingUrlTemplate = (el.value||"").trim();
-      stampTs("accommodations"); saveCfg();
-    });
-  });
 }
 document.getElementById("btn-add-acc").addEventListener("click",()=>{
   cfg.accommodations.push({
     name:"",
-    bookingHotelId:"",
-    bookingUrlTemplate:"",
     booking:{mode:"url",url:"",text:"",filename:""},
     airbnb: {mode:"url",url:"",text:"",filename:""}
   });
@@ -756,41 +811,35 @@ function normalizePhone(p){
   return (p||"").replace(/[^\d+]/g,"");
 }
 
-document.getElementById("btn-export").addEventListener("click",()=>{
-  // strip transient fields
-  const clean = JSON.parse(JSON.stringify(cfg));
-  for(const a of clean.accommodations){
-    for(const k of ["booking","airbnb"]){
-      if(a[k]){ delete a[k]._status; delete a[k]._statusClass; }
-    }
+// Test-knop: bouw een WhatsApp-URL met het ingevulde nummer en open het.
+document.getElementById("btn-whatsapp-test").addEventListener("click",()=>{
+  const msgEl = document.getElementById("whatsapp-test-msg");
+  const phone = (cfg.notify && cfg.notify.phone) || "";
+  const digits = phone.replace(/\D/g,"");
+  if(!digits){
+    msgEl.textContent = "⚠ Vul eerst een nummer in (inclusief landcode, bv. +32 475 …).";
+    msgEl.style.color = "#b03a2e";
+    return;
   }
-  const blob = new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "kuisplanning-config.json";
-  a.click();
+  if(digits.length < 8){
+    msgEl.textContent = "⚠ Dit nummer lijkt te kort. Geef het nummer met landcode (bv. +32 voor België).";
+    msgEl.style.color = "#b03a2e";
+    return;
+  }
+  const url = "https://wa.me/" + digits + "?text=" + encodeURIComponent(`✓ Testbericht — ${new Date().toLocaleTimeString("nl-BE",{hour:"2-digit",minute:"2-digit"})}`);
+  msgEl.innerHTML = `→ Probeert WhatsApp te openen… Werkt het niet? <a href="${url}" target="_blank" rel="noopener" style="color:#0b6b3b;font-weight:700">Klik hier handmatig</a>.`;
+  msgEl.style.color = "#0b6b3b";
+  // Gebruik de robuuste open-methode (anker-klik)
+  try{
+    const a = document.createElement("a");
+    a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ try{ a.remove(); }catch(e){} }, 0);
+  } catch(e){
+    window.location.href = url;
+  }
 });
-document.getElementById("btn-import").addEventListener("click",()=>{
-  const inp = document.createElement("input");
-  inp.type = "file"; inp.accept = "application/json";
-  inp.onchange = () => {
-    const f = inp.files[0]; if(!f) return;
-    const r = new FileReader();
-    r.onload = () => {
-      try{
-        const obj = JSON.parse(r.result);
-        if(obj && Array.isArray(obj.accommodations)){
-          localStorage.setItem(LS_KEY, JSON.stringify(obj));
-          cfg = loadCfg();
-          renderAccs(); refreshAccFilter(); renderProxies(); refresh();
-          alert("Instellingen geïmporteerd.");
-        } else alert("Ongeldig bestand.");
-      }catch(e){ alert("Kan bestand niet lezen: "+e.message); }
-    };
-    r.readAsText(f);
-  };
-  inp.click();
-});
+
 document.getElementById("btn-clear").addEventListener("click",()=>{
   if(!confirm("Alle instellingen wissen?")) return;
   cfg = defaultCfg(); saveCfg(); renderAccs(); refreshAccFilter(); renderProxies(); events=[]; render();
@@ -825,63 +874,6 @@ async function fetchViaProxies(url){
   return { ok:false, tried };
 }
 
-/* ---------- Reservation URL extraction ---------- */
-function extractReservationUrl(ev, src, acc){
-  const desc = (ev.description||"");
-  const sum  = (ev.summary||"");
-  const uid  = (ev.uid||"");
-  const srcLow = (src||"").toLowerCase();
-  // iCal DESCRIPTION often escapes newlines/commas; unescape for URL matching
-  const descUnesc = desc.replace(/\\n/g," ").replace(/\\,/g,",").replace(/\\;/g,";");
-  const allText = descUnesc + " " + sum + " " + uid;
-  // 1) Airbnb: look for "Reservation URL: https://..."
-  let m = descUnesc.match(/Reservation\s*URL\s*:\s*(https?:\/\/\S+)/i);
-  if(m) return m[1].replace(/[>)\].,;]+$/,"");
-  // 2) Any https URL referencing airbnb
-  m = allText.match(/https?:\/\/(?:www\.)?airbnb\.[a-z.]+\/\S+/i);
-  if(m) return m[0].replace(/[>)\].,;]+$/,"");
-  // 3) Any booking.com URL
-  m = allText.match(/https?:\/\/(?:www\.|admin\.|secure\.)?booking\.com\/\S+/i);
-  if(m) return m[0].replace(/[>)\].,;]+$/,"");
-  // 4) Booking.com: als we een hotel-ID en res_id hebben kunnen we een deep-link bouwen.
-  //    Gebruiker kan ook een eigen URL-sjabloon geven met {hotel_id} en {res_id}.
-  if(srcLow.includes("booking")){
-    const hotelId = (acc && acc.bookingHotelId ? String(acc.bookingHotelId).replace(/[^\d]/g,"") : "");
-    const tpl = (acc && acc.bookingUrlTemplate) ? String(acc.bookingUrlTemplate).trim() : "";
-    // UID van Booking.com is meestal iets zoals "1234567890@booking.com" — die lange getalreeks = res_id
-    let resId = "";
-    const uidM = uid.match(/(\d{6,})/);
-    if(uidM) resId = uidM[1];
-    else {
-      const txtM = allText.match(/(?:reservation|booking|res[\.\s#-]*nr|nummer|number)[^\d]{0,8}(\d{6,})/i);
-      if(txtM) resId = txtM[1];
-    }
-    // Als gebruiker een eigen sjabloon gaf: gebruik dat (placeholders vervangen)
-    if(tpl && resId){
-      return tpl
-        .replace(/\{hotel_id\}/g, encodeURIComponent(hotelId))
-        .replace(/\{res_id\}/g,   encodeURIComponent(resId));
-    }
-    // Standaardformaat (oude extranet — werkt niet voor iedereen):
-    if(hotelId && resId){
-      return "https://admin.booking.com/hotel/hoteladmin/extranet_ng/manage/booking.html"
-           + "?hotel_id=" + encodeURIComponent(hotelId)
-           + "&res_id="   + encodeURIComponent(resId);
-    }
-    if(hotelId){
-      return "https://admin.booking.com/hotel/hoteladmin/extranet_ng/manage/search_reservations.html"
-           + "?hotel_id=" + encodeURIComponent(hotelId);
-    }
-    return "https://admin.booking.com/";
-  }
-  if(srcLow.includes("airbnb")){
-    return "https://www.airbnb.com/hosting/reservations";
-  }
-  // Unknown source — last-resort: any https URL we can find
-  m = allText.match(/https?:\/\/\S+/i);
-  if(m) return m[0].replace(/[>)\].,;]+$/,"");
-  return "";
-}
 
 /* ---------- iCal parser ---------- */
 function parseIcal(text){
@@ -1003,7 +995,6 @@ async function refresh(){
           uid: ev.uid || ""
         };
         record.people = parsePeople(record);
-        record.reservationUrl = extractReservationUrl(ev, src, accs[i]);
         all.push(record);
         used++;
       }
@@ -1395,9 +1386,6 @@ function markCleaningDone(ev, extra){
   if(!cfg.cleanings) cfg.cleanings = {};
   const rec = { at: new Date().toISOString() };
   if(extra){
-    if(typeof extra.durationMin === "number" && isFinite(extra.durationMin) && extra.durationMin >= 0){
-      rec.durationMin = extra.durationMin;
-    }
     if(typeof extra.kuisNote === "string" && extra.kuisNote.trim()){
       rec.kuisNote = extra.kuisNote.trim();
     }
@@ -1432,11 +1420,9 @@ const modalEls = {
   undo:     document.getElementById("modal-undo"),
   done:     document.getElementById("modal-done"),
   doneBanner: document.getElementById("modal-done-banner"),
-  resLink:  document.getElementById("modal-reservation-link"),
   notes:    document.getElementById("modal-notes"),
   peopleAuto: document.getElementById("modal-people-auto"),
   finishForm:    document.getElementById("modal-finish-form"),
-  duration:      document.getElementById("modal-duration"),
   kuisNote:      document.getElementById("modal-kuis-note"),
   finishConfirm: document.getElementById("modal-finish-confirm"),
   finishCancel:  document.getElementById("modal-finish-cancel")
@@ -1498,38 +1484,6 @@ function openBookingModal(ev){
   // Notes
   modalEls.notes.value = getNote(ev);
 
-  // Reservation link — altijd tonen voor Booking/Airbnb. Voor Booking herberekenen we
-  // de URL live o.b.v. het hotel-ID dat de gebruiker intussen kan ingevuld hebben.
-  const srcLower = (ev.source||"").toLowerCase();
-  const acc = cfg.accommodations.find(a => (a.name||"(naamloos)") === ev.accName);
-  const liveUrl = extractReservationUrl(
-    { summary:ev.summary, description:ev.description, uid:ev.uid },
-    ev.source,
-    acc
-  );
-  let linkUrl = liveUrl || ev.reservationUrl || "";
-  let linkLabel = "";
-  if(srcLower.includes("booking")){
-    if(!linkUrl) linkUrl = "https://admin.booking.com/";
-    const hasDeepLink = /hotel_id=/.test(linkUrl);
-    linkLabel = hasDeepLink ? "🔗 Open deze reservatie in Booking.com" : "🔗 Open Booking extranet";
-    modalEls.resLink.className = "btn-link booking";
-  } else if(srcLower.includes("airbnb")){
-    if(!linkUrl) linkUrl = "https://www.airbnb.com/hosting/reservations";
-    linkLabel = "🔗 Open in Airbnb";
-    modalEls.resLink.className = "btn-link airbnb";
-  } else if(linkUrl){
-    linkLabel = "🔗 Open reservatie";
-    modalEls.resLink.className = "btn-link";
-  }
-  if(linkUrl){
-    modalEls.resLink.href = linkUrl;
-    modalEls.resLink.textContent = linkLabel;
-    modalEls.resLink.style.display = "inline-flex";
-  } else {
-    modalEls.resLink.style.display = "none";
-  }
-
   // Done state
   updateModalDoneState();
 
@@ -1539,12 +1493,6 @@ function closeBookingModal(){
   hideFinishForm();
   modalEls.backdrop.classList.remove("show");
   currentModalEv = null;
-}
-function formatDuration(mins){
-  if(typeof mins !== "number" || !isFinite(mins) || mins < 0) return "";
-  if(mins < 60) return mins + " min";
-  const h = Math.floor(mins/60), m = mins%60;
-  return m===0 ? (h + " u") : (h + " u " + m);
 }
 function updateModalDoneState(){
   const ev = currentModalEv;
@@ -1562,9 +1510,8 @@ function updateModalDoneState(){
       const dt = new Date(when);
       whenTxt = dt.toLocaleString("nl-BE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
     }catch(e){}
-    const durTxt = formatDuration(rec.durationMin);
     const noteTxt = rec.kuisNote ? rec.kuisNote : "";
-    let banner = `<div class="done-banner">✓ Gekuist${whenTxt?(" — "+escapeHtml(whenTxt)):""}${durTxt?(" · ⏱ "+escapeHtml(durTxt)):""}</div>`;
+    let banner = `<div class="done-banner">✓ Gekuist${whenTxt?(" — "+escapeHtml(whenTxt)):""}</div>`;
     if(noteTxt){
       banner += `<div class="done-banner" style="background:#fde047;color:#713f12;margin-top:6px">📝 Opmerking kuis: ${escapeHtml(noteTxt)}</div>`;
     }
@@ -1582,15 +1529,14 @@ function showFinishForm(){
   if(!ev) return;
   // Pre-fill met bestaande waarden als die er zijn
   const rec = (cfg.cleanings && cfg.cleanings[cleaningKey(ev)]) || {};
-  modalEls.duration.value = (typeof rec.durationMin === "number" ? String(rec.durationMin) : "");
   modalEls.kuisNote.value = rec.kuisNote || "";
   modalEls.finishForm.style.display = "block";
   modalEls.done.style.display = "none";
   modalEls.finishConfirm.style.display = "inline-flex";
   modalEls.finishCancel.style.display = "inline-flex";
   modalEls.undo.style.display = "none";
-  // Focus het duurveld meteen zodat de kuisvrouw snel kan typen
-  setTimeout(()=>{ modalEls.duration.focus(); }, 50);
+  // Focus het opmerkingenveld zodat de kuisvrouw direct kan typen
+  setTimeout(()=>{ try{ modalEls.kuisNote.focus(); }catch(e){} }, 50);
 }
 function hideFinishForm(){
   modalEls.finishForm.style.display = "none";
@@ -1631,39 +1577,59 @@ modalEls.finishCancel.addEventListener("click",()=>{
   hideFinishForm();
   updateModalDoneState();
 });
-// Quick-pick duurknoppen
-document.querySelectorAll(".dur-quick").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    modalEls.duration.value = btn.getAttribute("data-dur");
-    modalEls.duration.focus();
-  });
-});
+
+/* ---------- WhatsApp helpers ---------- */
+// Bouwt een wa.me-URL. wa.me verwacht enkel cijfers (zonder + en zonder spaties).
+function buildWhatsAppUrl(phoneRaw, text){
+  const digits = (phoneRaw||"").replace(/\D/g,"");
+  if(!digits) return "";
+  return "https://wa.me/" + digits + "?text=" + encodeURIComponent(text||"");
+}
+// Robuuste manier om WhatsApp te openen — werkt op iPhone én Android én desktop.
+// Gebruikt een echte <a target="_blank">-klik in plaats van window.open(),
+// want popup-blockers blokkeren window.open soms zelfs binnen een gebruikers­klik.
+function openWhatsApp(url){
+  if(!url) return false;
+  try{
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ try{ a.remove(); }catch(e){} }, 0);
+    return true;
+  } catch(e){
+    try{ window.location.href = url; return true; } catch(e2){ return false; }
+  }
+}
+
 // Bevestig finish-form → effectief markeren als klaar + WhatsApp
 modalEls.finishConfirm.addEventListener("click",()=>{
   const ev = currentModalEv;
   if(!ev) return;
-  const durRaw = (modalEls.duration.value||"").trim();
-  let durationMin = null;
-  if(durRaw !== ""){
-    const n = parseInt(durRaw, 10);
-    if(!isNaN(n) && n >= 0) durationMin = n;
-  }
   const kuisNote = (modalEls.kuisNote.value||"").trim();
-  markCleaningDone(ev, { durationMin, kuisNote });
+  markCleaningDone(ev, { kuisNote });
   hideFinishForm();
   updateModalDoneState();
   renderCalendar();
-  // WhatsApp deeplink met duur + eventuele opmerking
-  const phone = normalizePhone((cfg.notify && cfg.notify.phone) || "");
-  if(phone){
-    const now = new Date();
-    const hhmm = String(now.getHours()).padStart(2,"0") + ":" + String(now.getMinutes()).padStart(2,"0");
-    let text = `🧹 ${ev.accName} is klaar — ${hhmm}`;
-    if(durationMin != null) text += ` · ⏱ ${formatDuration(durationMin)}`;
-    if(kuisNote) text += `\n📝 ${kuisNote}`;
-    const url = "https://wa.me/" + phone.replace(/^\+/,"") + "?text=" + encodeURIComponent(text);
-    window.open(url, "_blank", "noopener");
+  // WhatsApp-bericht: tijd + eventuele opmerking
+  const phone = (cfg.notify && cfg.notify.phone) || "";
+  const now = new Date();
+  const hhmm = String(now.getHours()).padStart(2,"0") + ":" + String(now.getMinutes()).padStart(2,"0");
+  let text = `🧹 ${ev.accName} is klaar — ${hhmm}`;
+  if(kuisNote) text += `\n📝 ${kuisNote}`;
+  const url = buildWhatsAppUrl(phone, text);
+  if(!url){
+    return; // geen geldig nummer
   }
+  // Toon een back-up-link in de modal voor het geval het automatisch openen wordt geblokkeerd.
+  const fallback = document.createElement("div");
+  fallback.className = "done-banner";
+  fallback.style.cssText = "background:#dcfce7;color:#166534;margin-top:6px;flex-direction:column;align-items:flex-start;gap:6px";
+  fallback.innerHTML = `WhatsApp opent in een nieuw tabblad. <a href="${url}" target="_blank" rel="noopener" style="color:#166534;font-weight:700;text-decoration:underline">Klik hier</a> als het bericht niet automatisch opent.`;
+  modalEls.doneBanner.appendChild(fallback);
+  openWhatsApp(url);
 });
 modalEls.undo.addEventListener("click",()=>{
   const ev = currentModalEv;
@@ -1769,11 +1735,16 @@ function mergeConfigs(local, remote){
   merged._ts = merged._ts || { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
 
   // Whole-object sections: accommodations, proxies, notify → newer _ts wins
+  // Tie-breaker: bij gelijke tijdstempels (bv. beide 0 na migratie), wint de kant mét data over de kant zonder data.
+  const isEmpty = (v) => v == null || (Array.isArray(v) && v.length===0) || (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length===0);
   for(const sec of ["accommodations","proxies","notify"]){
     const ltv = lt[sec] || 0, rtv = rt[sec] || 0;
-    if(rtv > ltv){
+    const localEmpty = isEmpty(local[sec]);
+    const remoteEmpty = isEmpty(remote[sec]);
+    const takeRemote = (rtv > ltv) || (rtv === ltv && localEmpty && !remoteEmpty);
+    if(takeRemote){
       merged[sec] = remote[sec];
-      merged._ts[sec] = rtv;
+      merged._ts[sec] = Math.max(ltv, rtv);
     } else {
       merged._ts[sec] = ltv;
     }
@@ -1830,6 +1801,20 @@ async function cloudSyncOnce(){
       } else { throw e; }
     }
     const { merged, changedFromLocal } = mergeConfigs(cfg, remote || {});
+    // Vergelijk ALLEEN de velden die ertoe doen voor de feeds (URL/tekst/bestand),
+    // niet de interne _status-velden die tussen toestellen verschillen.
+    const coreAccsBefore = (cfg.accommodations||[]).map(a=>({
+      name:a.name,
+      booking:a.booking?{mode:a.booking.mode,url:a.booking.url,text:a.booking.text,filename:a.booking.filename}:null,
+      airbnb:a.airbnb?{mode:a.airbnb.mode,url:a.airbnb.url,text:a.airbnb.text,filename:a.airbnb.filename}:null
+    }));
+    const coreAccsAfter = (merged.accommodations||[]).map(a=>({
+      name:a.name,
+      booking:a.booking?{mode:a.booking.mode,url:a.booking.url,text:a.booking.text,filename:a.booking.filename}:null,
+      airbnb:a.airbnb?{mode:a.airbnb.mode,url:a.airbnb.url,text:a.airbnb.text,filename:a.airbnb.filename}:null
+    }));
+    const feedsChanged = JSON.stringify(coreAccsBefore) !== JSON.stringify(coreAccsAfter);
+    const proxiesChanged = JSON.stringify((cfg.proxies||[])) !== JSON.stringify((merged.proxies||[]));
     if(changedFromLocal){
       // Pull: adopt merged locally
       cfg = merged;
@@ -1837,8 +1822,15 @@ async function cloudSyncOnce(){
       // Herteken de zichtbare schermen zodat nieuwe data direct zichtbaar is
       try{ renderAccs(); }catch(e){}
       try{ refreshAccFilter(); }catch(e){}
-      try{ render(); }catch(e){}
-      try{ renderCalendar(); }catch(e){}
+      try{ renderProxies(); }catch(e){}
+      // Als de feeds veranderd zijn: wacht tot iCal opnieuw geladen is en herteken dan.
+      // Zo niet: herteken direct met bestaande events.
+      if(feedsChanged || proxiesChanged){
+        try{ await refresh(); }catch(e){}
+      } else {
+        try{ render(); }catch(e){}
+        try{ renderCalendar(); }catch(e){}
+      }
     }
     // Push merged back (so remote is at least as up-to-date)
     await cloudPut(stripLocalOnlyFields(merged));
