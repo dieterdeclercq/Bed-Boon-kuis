@@ -180,6 +180,43 @@
 
   .cal-empty{padding:28px;text-align:center;color:var(--muted)}
 
+  /* ---------- Vergaderzaal (meeting room) ---------- */
+  .bar.meeting{--bar-bg:#7c3aed;background:linear-gradient(180deg,#a78bfa 0%,#7c3aed 100%) !important;color:#fff}
+  .bar.meeting.done{--bar-bg:#16a34a !important;background:linear-gradient(90deg,#16a34a,#15803d) !important}
+  .bar.meeting .slot-pill{font-size:9px;padding:2px 5px;background:rgba(255,255,255,.30);border-radius:3px;text-transform:uppercase;letter-spacing:.7px;font-weight:700;flex-shrink:0}
+  /* Day cell needs relative positioning for the kuisdag-ster en + knop */
+  .day-cell{position:relative;cursor:pointer}
+  .day-cell.other-month{cursor:default}
+  /* Rode kuisdag-ster: rechtsboven in de daycel, alleen zichtbaar als gezet */
+  .cleaning-star-overlay{position:absolute;top:2px;right:4px;font-size:14px;line-height:1;color:#dc2626;text-shadow:0 1px 2px rgba(0,0,0,.2);pointer-events:none;z-index:2}
+  .cleaning-star-overlay.large{font-size:16px}
+  /* "Vergaderzaal toevoegen" hint icoon onderaan rechts (verschijnt bij hover/touch) */
+  .day-add-hint{position:absolute;bottom:1px;right:3px;font-size:11px;color:var(--muted);opacity:0;transition:opacity .15s;pointer-events:none;z-index:1;font-weight:600;background:rgba(255,255,255,.7);border-radius:3px;padding:0 4px}
+  .day-cell:hover .day-add-hint{opacity:.55}
+  /* Day-actions modal kleur (paars, want vergaderzaal) */
+  #day-modal-head{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+  /* Sectie binnen day-modal voor bestaande vergaderingen */
+  .meet-list-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:#faf8ff;cursor:pointer;transition:background .15s}
+  .meet-list-item:hover{background:#f3edff;border-color:#d4c4ff}
+  .meet-list-item .meet-slot{display:inline-block;background:#7c3aed;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase}
+  .meet-list-item.done .meet-slot{background:#16a34a}
+  .meet-list-item .meet-info{flex:1;font-size:13.5px}
+  .meet-list-item .meet-info .meet-people{color:var(--muted);font-size:12.5px}
+  .meet-list-item .meet-del{background:#fff;border:1px solid #e7c9c3;color:#a2271a;padding:5px 10px;border-radius:8px;font-size:12.5px;cursor:pointer}
+  .meet-list-item .meet-del:hover{background:#fbeeea}
+  .star-btn-big{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-weight:600;font-size:14.5px;color:#1f2430}
+  .star-btn-big.on{background:linear-gradient(135deg,#fee2e2,#fecaca);border-color:#fca5a5;color:#991b1b}
+  .star-btn-big:hover{filter:brightness(.97)}
+  .add-meet-btn-big{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;border:1px solid #c4b5fd;background:linear-gradient(135deg,#ede9fe,#ddd6fe);cursor:pointer;font-weight:700;font-size:14.5px;color:#5b21b6}
+  .add-meet-btn-big:hover{filter:brightness(.97)}
+  .meeting-form{border-top:1px solid var(--border);margin-top:14px;padding-top:14px}
+  .meeting-form .field{margin-top:10px}
+  .meeting-form .slot-row{display:flex;gap:6px;flex-wrap:wrap}
+  .meeting-form .slot-row label{flex:1;min-width:80px;display:flex;align-items:center;justify-content:center;padding:9px 10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px;background:#fff;text-align:center}
+  .meeting-form .slot-row input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+  .meeting-form .slot-row label.sel{background:#7c3aed;border-color:#7c3aed;color:#fff}
+  .meeting-form .slot-row label:has(input:checked){background:#7c3aed;border-color:#7c3aed;color:#fff}
+
   /* Modal */
   .modal-backdrop{position:fixed;inset:0;background:rgba(20,22,30,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
   .modal-backdrop.show{display:flex}
@@ -540,6 +577,61 @@
   </div>
 </div>
 
+<!-- Day-actions modal: rode ster + vergaderzaal toevoegen/bewerken -->
+<div class="modal-backdrop" id="day-modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head" id="day-modal-head">
+      <h3 id="day-modal-title">—</h3>
+      <button class="modal-close" id="day-modal-close" aria-label="Sluiten">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button id="day-modal-star" class="star-btn-big" type="button">☆ Kuisdag aanduiden</button>
+      </div>
+      <div id="day-modal-meet-list" style="margin-top:8px"></div>
+      <div class="row" style="margin-top:10px">
+        <button id="day-modal-add-meet" class="add-meet-btn-big" type="button">+ Vergaderzaal toevoegen</button>
+      </div>
+      <!-- Inline form voor toevoegen/bewerken vergaderzaal -->
+      <div id="meeting-form" class="meeting-form" style="display:none">
+        <h4 id="meeting-form-title" style="margin:0 0 6px 0;font-size:15px">Vergaderzaal toevoegen</h4>
+        <div class="field">
+          <label>Wanneer</label>
+          <div class="slot-row">
+            <label><input type="radio" name="meet-slot" value="AM" /><span>Voormiddag</span></label>
+            <label><input type="radio" name="meet-slot" value="PM" /><span>Namiddag</span></label>
+            <label><input type="radio" name="meet-slot" value="FULL" checked /><span>Hele dag</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="meet-people">Aantal personen (optioneel)</label>
+          <input type="number" id="meet-people" min="0" step="1" />
+        </div>
+        <div class="field">
+          <label for="meet-note">Notitie / extra info (optioneel)</label>
+          <textarea id="meet-note" rows="3" placeholder="bv. catering, opstelling, naam van groep…"></textarea>
+        </div>
+      </div>
+      <!-- Klaar-form (kuisvrouw): opmerking + bevestiging -->
+      <div id="meeting-finish-form" class="meeting-form" style="display:none">
+        <div class="field">
+          <label for="meet-kuisnote">Opmerkingen voor de eigenaar (bv. iets stuk, iets vergeten…)</label>
+          <textarea id="meet-kuisnote" rows="3" placeholder="Laat leeg als er niets bijzonders is."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="danger" id="meeting-form-delete" style="display:none">Verwijderen</button>
+      <div class="spacer"></div>
+      <button id="meeting-form-cancel" style="display:none">Annuleer</button>
+      <button class="primary" id="meeting-form-save" style="display:none">✓ Opslaan</button>
+      <button class="btn-undone" id="meeting-undo" style="display:none">Vinkje weghalen</button>
+      <button class="btn-done" id="meeting-done" style="display:none">✓ Vergaderzaal klaar</button>
+      <button class="btn-done" id="meeting-finish-confirm" style="display:none">✓ Bevestig &amp; stuur bericht</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ---------- Storage ---------- */
 const LS_KEY = "bnb-cleaning-planner-v5";
@@ -553,8 +645,9 @@ const DEFAULT_PROXIES = [
 function defaultCfg(){ return {
   accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})),
   guestCounts: {}, cleanings: {}, notify: { phone: "" }, notes: {},
+  meetings: {}, cleaningDays: {},
   sync: { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" },
-  _ts: { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} }
+  _ts: { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{} }
 }; }
 function loadCfg(){
   try{
@@ -595,11 +688,15 @@ function loadCfg(){
       delete a.bookingUrlTemplate;
     }
     if(!raw.notes) raw.notes = {};
+    if(!raw.meetings) raw.meetings = {};
+    if(!raw.cleaningDays) raw.cleaningDays = {};
     if(!raw.sync) raw.sync = { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" };
-    if(!raw._ts) raw._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+    if(!raw._ts) raw._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{} };
     if(!raw._ts.guestCounts) raw._ts.guestCounts = {};
     if(!raw._ts.cleanings)   raw._ts.cleanings   = {};
     if(!raw._ts.notes)       raw._ts.notes       = {};
+    if(!raw._ts.meetings)    raw._ts.meetings    = {};
+    if(!raw._ts.cleaningDays) raw._ts.cleaningDays = {};
     // Als er al data is van een vorige versie zonder _ts, stempel met huidige tijd
     // zodat deze data andere toestellen (standaard _ts = 0) kan overschrijven bij sync.
     const _now = Date.now();
@@ -618,6 +715,12 @@ function loadCfg(){
     }
     for(const k of Object.keys(raw.notes||{})){
       if(!(k in raw._ts.notes)){ raw._ts.notes[k] = _now; _stamped = true; }
+    }
+    for(const k of Object.keys(raw.meetings||{})){
+      if(!(k in raw._ts.meetings)){ raw._ts.meetings[k] = _now; _stamped = true; }
+    }
+    for(const k of Object.keys(raw.cleaningDays||{})){
+      if(!(k in raw._ts.cleaningDays)){ raw._ts.cleaningDays[k] = _now; _stamped = true; }
     }
     if(_stamped){ try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
     return raw;
@@ -1222,10 +1325,32 @@ function segmentsForWeek(weekStart, evts){
     const hasEnd   = (segEnd.getTime() === e.getTime());
     segs.push({
       ev,
+      kind: "booking",
       startCol,
       endCol: startCol + spanCols, // exclusive for grid-column end
       hasStart, hasEnd
     });
+  }
+  return segs;
+}
+/* Vergaderzaal-segmenten voor een week — altijd 1 dag breed */
+function meetingSegmentsForWeek(weekStart){
+  const segs = [];
+  if(!cfg.meetings) return segs;
+  for(let d=0; d<7; d++){
+    const day = addDays(weekStart, d);
+    const k = ymd(day);
+    const meets = getMeetingsForDay(k).filter(m => !m.deleted);
+    for(const m of meets){
+      segs.push({
+        meeting: m,
+        kind: "meeting",
+        startCol: d+1,
+        endCol: d+2,
+        hasStart: true,
+        hasEnd: true
+      });
+    }
   }
   return segs;
 }
@@ -1297,9 +1422,14 @@ function renderCalendar(){
     const weekStart = addDays(gridStart, w*7);
     // stop if whole week is after month and we've already rendered a week that starts after month end
     const weekEndExcl = addDays(weekStart,7);
-    // compute bar segments for this week
-    const segs = segmentsForWeek(weekStart, events);
-    const laneCount = assignLanes(segs);
+    // compute bar segments for this week — eerst boekingen, dan vergaderzaal eronder
+    const bookingSegs = segmentsForWeek(weekStart, events);
+    const bookingLanes = assignLanes(bookingSegs);
+    const meetingSegs = meetingSegmentsForWeek(weekStart);
+    const meetingLanes = assignLanes(meetingSegs);
+    // Vergaderzaal-lanes verschuiven onder de booking-lanes
+    for(const m of meetingSegs){ m.lane = m.lane + bookingLanes; }
+    const laneCount = bookingLanes + meetingLanes;
 
     html += `<div class="cal-week">`;
 
@@ -1309,18 +1439,22 @@ function renderCalendar(){
       const inMonth = day.getMonth() === calCursor.getMonth();
       const isToday = day.getTime() === today.getTime();
       const isWe = d>=5;
-      const isWissel = wisselDays.has(ymd(day));
+      const dayKey = ymd(day);
+      const isWissel = wisselDays.has(dayKey);
+      const isStar = isCleaningDay(dayKey);
       const classes = ["day-cell"];
       if(!inMonth) classes.push("other-month");
       if(isToday) classes.push("today");
       if(isWe) classes.push("weekend");
       if(isWissel) classes.push("wissel");
       const wissel = isWissel ? `<span class="wissel-badge" title="Check-out én check-in dezelfde dag">⇆ Wissel</span>` : "";
-      html += `<div class="${classes.join(" ")}" style="grid-column:${d+1}/${d+2};grid-row:1"><div class="day-num">${day.getDate()}${wissel}</div></div>`;
+      const star = isStar ? `<span class="cleaning-star-overlay" title="Kuisdag — de kuisvrouw komt deze dag">★</span>` : "";
+      const addHint = inMonth ? `<span class="day-add-hint" aria-hidden="true">+</span>` : "";
+      html += `<div class="${classes.join(" ")}" style="grid-column:${d+1}/${d+2};grid-row:1" data-ymd="${dayKey}" data-inmonth="${inMonth?1:0}"><div class="day-num"><span class="n">${day.getDate()}</span>${wissel}</div>${star}${addHint}</div>`;
     }
 
-    // bars — render after day cells so they layer below via explicit grid-row
-    for(const s of segs){
+    // booking bars — render after day cells so they layer below via explicit grid-row
+    for(const s of bookingSegs){
       const ev = s.ev;
       const cls = ["bar"];
       if(s.hasStart) cls.push("start");
@@ -1350,6 +1484,31 @@ function renderCalendar(){
       </div>`;
     }
 
+    // vergaderzaal bars
+    for(const s of meetingSegs){
+      const m = s.meeting;
+      const cls = ["bar","meeting","start","end"];
+      const isDone = isMeetingDone(m);
+      if(isDone) cls.push("done");
+      const slot = slotShort(m.slot);
+      const ppl = (m.people!=null && m.people!=="") ? (m.people+" pers.") : "";
+      const note = (m.note||"").trim();
+      const hasNote = !!note;
+      if(hasNote) cls.push("has-note");
+      const notePreview = hasNote ? (note.length > 24 ? note.slice(0,22).replace(/\s+$/,"") + "…" : note).replace(/\n/g," · ") : "";
+      const titleTxt = `Vergaderzaal — ${slotLabel(m.slot)}${ppl?" · "+ppl:""}${hasNote?"\n📝 "+note.replace(/\n/g," · "):""}${isDone?"\n✓ klaar":""}\nKlik voor details`;
+      const notePill = hasNote ? `<span class="note-pill" title="${escapeHtml(note)}">📝 ${escapeHtml(notePreview)}</span>` : "";
+      const rightBadge = isDone
+        ? `<span class="check">✓ klaar</span>`
+        : (ppl ? `<span class="ppl">👤 ${escapeHtml(ppl)}</span>` : "");
+      html += `<div class="${cls.join(" ")}" style="--cstart:${s.startCol};--cend:${s.endCol};--lane:${2+s.lane}" data-meetid="${escapeHtml(m.id)}" title="${escapeHtml(titleTxt)}">
+        <span class="slot-pill">${escapeHtml(slot)}</span>
+        <span class="name">Vergaderzaal</span>
+        ${notePill}
+        ${rightBadge}
+      </div>`;
+    }
+
     // spacer row so bars always get visible even if no days extend
     if(laneCount>0) html += `<div style="grid-column:1/8;grid-row:${2+laneCount};min-height:4px"></div>`;
     else html += `<div style="grid-column:1/8;grid-row:2;min-height:4px"></div>`;
@@ -1362,11 +1521,36 @@ function renderCalendar(){
 
   // bind bar clicks to open modal
   body.querySelectorAll(".bar").forEach(el=>{
-    el.addEventListener("click",()=>{
+    el.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      const meetId = el.getAttribute("data-meetid");
+      if(meetId){
+        const m = cfg.meetings && cfg.meetings[meetId];
+        if(m && !m.deleted) openDayModal(m.date, { focusMeetingId: meetId });
+        return;
+      }
       const key = el.getAttribute("data-bookkey");
       const ev = events.find(e=>bookingKey(e)===key);
       if(!ev) return;
       openBookingModal(ev);
+    });
+  });
+  // bind day-cell clicks → open day-actions modal (rode ster + vergaderzaal)
+  body.querySelectorAll(".day-cell").forEach(el=>{
+    el.addEventListener("click",(e)=>{
+      // negeer klikken die uit een balk komen (die bubbelen niet, maar toch defensief)
+      if(e.target.closest(".bar")) return;
+      const ymdStr = el.getAttribute("data-ymd");
+      if(!ymdStr) return;
+      const inMonth = el.getAttribute("data-inmonth")==="1";
+      // Klik op een dag uit een aangrenzende maand: navigeer naar die maand i.p.v. modal openen
+      if(!inMonth){
+        const [Y,M,D] = ymdStr.split("-").map(Number);
+        calCursor = new Date(Y, M-1, 1);
+        renderCalendar();
+        return;
+      }
+      openDayModal(ymdStr);
     });
   });
 }
@@ -1439,6 +1623,54 @@ function setNote(ev, text){
   const t = (text||"").trim();
   if(t){ cfg.notes[k] = t; } else { delete cfg.notes[k]; }
   stampTs("notes", k);
+  saveCfg();
+}
+
+/* ---------- Vergaderzaal (meeting room) opslag ---------- */
+function makeMeetingId(){
+  // Unieke ID: timestamp + random suffix
+  return "m" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+function getMeetingsForDay(ymdStr){
+  if(!cfg.meetings) return [];
+  return Object.values(cfg.meetings).filter(m => m && m.date === ymdStr);
+}
+function saveMeeting(meet){
+  if(!cfg.meetings) cfg.meetings = {};
+  if(!meet.id) meet.id = makeMeetingId();
+  cfg.meetings[meet.id] = meet;
+  stampTs("meetings", meet.id);
+  saveCfg();
+}
+function deleteMeeting(id){
+  if(!cfg.meetings) return;
+  // We bewaren een "tombstone" zodat sync de delete kan repliceren
+  cfg.meetings[id] = { id, deleted:true };
+  stampTs("meetings", id);
+  saveCfg();
+}
+function isMeetingDone(meet){ return !!(meet && meet.done); }
+function slotLabel(slot){
+  if(slot==="AM") return "Voormiddag";
+  if(slot==="PM") return "Namiddag";
+  return "Hele dag";
+}
+function slotShort(slot){
+  if(slot==="AM") return "VM";
+  if(slot==="PM") return "NM";
+  return "Hele dag";
+}
+
+/* ---------- Kuisdag-ster (rode ster) ---------- */
+function isCleaningDay(ymdStr){
+  if(!cfg.cleaningDays) return false;
+  return !!cfg.cleaningDays[ymdStr];
+}
+function toggleCleaningDay(ymdStr){
+  if(!cfg.cleaningDays) cfg.cleaningDays = {};
+  if(cfg.cleaningDays[ymdStr]){ delete cfg.cleaningDays[ymdStr]; }
+  else { cfg.cleaningDays[ymdStr] = true; }
+  stampTs("cleaningDays", ymdStr);
   saveCfg();
 }
 
@@ -1639,6 +1871,271 @@ modalEls.undo.addEventListener("click",()=>{
   renderCalendar();
 });
 
+/* ---------- Day-actions modal (rode ster + vergaderzaal) ---------- */
+const dayModalEls = {
+  backdrop: document.getElementById("day-modal-backdrop"),
+  title:    document.getElementById("day-modal-title"),
+  close:    document.getElementById("day-modal-close"),
+  star:     document.getElementById("day-modal-star"),
+  meetList: document.getElementById("day-modal-meet-list"),
+  addMeet:  document.getElementById("day-modal-add-meet"),
+  form:     document.getElementById("meeting-form"),
+  formTitle:document.getElementById("meeting-form-title"),
+  people:   document.getElementById("meet-people"),
+  note:     document.getElementById("meet-note"),
+  finishForm:    document.getElementById("meeting-finish-form"),
+  kuisNote:      document.getElementById("meet-kuisnote"),
+  delBtn:   document.getElementById("meeting-form-delete"),
+  cancelBtn:document.getElementById("meeting-form-cancel"),
+  saveBtn:  document.getElementById("meeting-form-save"),
+  doneBtn:  document.getElementById("meeting-done"),
+  undoBtn:  document.getElementById("meeting-undo"),
+  finishConfirm: document.getElementById("meeting-finish-confirm")
+};
+let dayModalState = { ymd: null, editingId: null, mode: "list" };
+
+function openDayModal(ymdStr, opts){
+  dayModalState.ymd = ymdStr;
+  dayModalState.editingId = null;
+  dayModalState.mode = "list";
+  // Mooie titel: "wo 29 apr 2026"
+  const [Y,M,D] = ymdStr.split("-").map(Number);
+  const d = new Date(Y, M-1, D);
+  dayModalEls.title.textContent = d.toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  renderDayModalBody();
+  dayModalEls.backdrop.classList.add("show");
+  // Auto-focus op een specifieke vergadering openen?
+  if(opts && opts.focusMeetingId){
+    showMeetingForm(opts.focusMeetingId);
+  }
+}
+function closeDayModal(){
+  dayModalEls.backdrop.classList.remove("show");
+  dayModalState.ymd = null;
+  dayModalState.editingId = null;
+  dayModalState.mode = "list";
+}
+function renderDayModalBody(){
+  const ymdStr = dayModalState.ymd;
+  if(!ymdStr) return;
+  // Reset list-/ster-zichtbaarheid (kunnen verborgen zijn na edit-mode)
+  dayModalEls.meetList.style.display = "";
+  if(dayModalEls.star.parentElement) dayModalEls.star.parentElement.style.display = "";
+  // Star toggle
+  const isStar = isCleaningDay(ymdStr);
+  dayModalEls.star.classList.toggle("on", isStar);
+  dayModalEls.star.innerHTML = isStar ? '★ Kuisdag — aan' : '☆ Kuisdag aanduiden';
+  // Meetings list
+  const meets = getMeetingsForDay(ymdStr).filter(m=>!m.deleted);
+  if(meets.length===0){
+    dayModalEls.meetList.innerHTML = '<p class="muted" style="font-size:13px;margin:6px 0">Nog geen vergaderzaal-boekingen op deze dag.</p>';
+  } else {
+    let h = '<p class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin:8px 0 6px">Vergaderzaal</p>';
+    for(const m of meets){
+      const cls = ["meet-list-item"];
+      if(isMeetingDone(m)) cls.push("done");
+      const ppl = (m.people!=null && m.people!=="") ? `<span class="meet-people">· 👤 ${escapeHtml(String(m.people))} pers.</span>` : "";
+      const noteSnip = (m.note||"").trim();
+      const noteShort = noteSnip ? `<div class="meet-people" style="margin-top:2px">📝 ${escapeHtml(noteSnip.length>60?noteSnip.slice(0,58)+"…":noteSnip)}</div>` : "";
+      const doneTag = isMeetingDone(m) ? `<span class="meet-people" style="color:#15803d;font-weight:600">· ✓ klaar</span>` : "";
+      h += `<div class="${cls.join(" ")}" data-meet-edit="${escapeHtml(m.id)}">
+        <span class="meet-slot">${escapeHtml(slotShort(m.slot))}</span>
+        <div class="meet-info"><b>${escapeHtml(slotLabel(m.slot))}</b> ${ppl} ${doneTag}${noteShort}</div>
+      </div>`;
+    }
+    dayModalEls.meetList.innerHTML = h;
+    dayModalEls.meetList.querySelectorAll("[data-meet-edit]").forEach(el=>{
+      el.addEventListener("click",()=>{
+        const id = el.getAttribute("data-meet-edit");
+        showMeetingForm(id);
+      });
+    });
+  }
+  // Show add button + list, hide forms
+  dayModalEls.addMeet.style.display = "inline-flex";
+  dayModalEls.form.style.display = "none";
+  dayModalEls.finishForm.style.display = "none";
+  dayModalEls.delBtn.style.display = "none";
+  dayModalEls.cancelBtn.style.display = "none";
+  dayModalEls.saveBtn.style.display = "none";
+  dayModalEls.doneBtn.style.display = "none";
+  dayModalEls.undoBtn.style.display = "none";
+  dayModalEls.finishConfirm.style.display = "none";
+  dayModalState.mode = "list";
+}
+function showMeetingForm(meetingId){
+  // meetingId === null/undefined → nieuwe boeking
+  dayModalState.editingId = meetingId || null;
+  dayModalState.mode = "edit";
+  let m = null;
+  if(meetingId && cfg.meetings) m = cfg.meetings[meetingId];
+  if(!m || m.deleted){
+    m = { id: null, date: dayModalState.ymd, slot: "FULL", people: "", note: "", done:false };
+  }
+  dayModalEls.formTitle.textContent = meetingId ? "Vergaderzaal bewerken" : "Vergaderzaal toevoegen";
+  // Slot radio
+  const radios = dayModalEls.form.querySelectorAll('input[name="meet-slot"]');
+  radios.forEach(r => {
+    r.checked = (r.value === (m.slot||"FULL"));
+    if(r.parentElement) r.parentElement.classList.toggle("sel", r.checked);
+  });
+  dayModalEls.people.value = (m.people==null?"":String(m.people));
+  dayModalEls.note.value = m.note || "";
+  // Show form, hide list+add, set buttons
+  dayModalEls.addMeet.style.display = "none";
+  dayModalEls.meetList.style.display = "none";
+  dayModalEls.star.parentElement.style.display = "none";
+  dayModalEls.form.style.display = "block";
+  dayModalEls.finishForm.style.display = "none";
+  dayModalEls.cancelBtn.style.display = "inline-flex";
+  dayModalEls.saveBtn.style.display = "inline-flex";
+  dayModalEls.delBtn.style.display = meetingId ? "inline-flex" : "none";
+  // "Klaar" / "Vinkje weghalen": alleen tonen als de boeking al bestaat
+  if(meetingId){
+    if(isMeetingDone(m)){
+      dayModalEls.doneBtn.style.display = "none";
+      dayModalEls.undoBtn.style.display = "inline-flex";
+    } else {
+      dayModalEls.doneBtn.style.display = "inline-flex";
+      dayModalEls.undoBtn.style.display = "none";
+    }
+  } else {
+    dayModalEls.doneBtn.style.display = "none";
+    dayModalEls.undoBtn.style.display = "none";
+  }
+  dayModalEls.finishConfirm.style.display = "none";
+}
+function showMeetingFinishForm(){
+  const id = dayModalState.editingId;
+  if(!id) return;
+  const m = cfg.meetings && cfg.meetings[id];
+  if(!m || m.deleted) return;
+  dayModalState.mode = "finish";
+  dayModalEls.kuisNote.value = m.doneNote || "";
+  dayModalEls.form.style.display = "none";
+  dayModalEls.finishForm.style.display = "block";
+  dayModalEls.cancelBtn.style.display = "inline-flex";
+  dayModalEls.saveBtn.style.display = "none";
+  dayModalEls.delBtn.style.display = "none";
+  dayModalEls.doneBtn.style.display = "none";
+  dayModalEls.undoBtn.style.display = "none";
+  dayModalEls.finishConfirm.style.display = "inline-flex";
+  setTimeout(()=>{ try{ dayModalEls.kuisNote.focus(); }catch(e){} }, 50);
+}
+function readMeetingFormValues(){
+  const slotRadio = dayModalEls.form.querySelector('input[name="meet-slot"]:checked');
+  const slot = slotRadio ? slotRadio.value : "FULL";
+  const peopleRaw = dayModalEls.people.value.trim();
+  const people = peopleRaw==="" ? null : (isNaN(+peopleRaw) ? null : +peopleRaw);
+  const note = (dayModalEls.note.value||"").trim();
+  return { slot, people, note };
+}
+
+// Slot-radio visuele state synchroon houden (fallback voor browsers zonder :has)
+dayModalEls.form.querySelectorAll('input[name="meet-slot"]').forEach(r=>{
+  r.addEventListener("change",()=>{
+    dayModalEls.form.querySelectorAll('input[name="meet-slot"]').forEach(other=>{
+      if(other.parentElement) other.parentElement.classList.toggle("sel", other.checked);
+    });
+  });
+});
+
+// Star toggle (rode ster)
+dayModalEls.star.addEventListener("click",()=>{
+  if(!dayModalState.ymd) return;
+  toggleCleaningDay(dayModalState.ymd);
+  renderDayModalBody();
+  renderCalendar();
+});
+// + Vergaderzaal toevoegen
+dayModalEls.addMeet.addEventListener("click",()=>{
+  showMeetingForm(null);
+});
+// Cancel: terug naar list-view (en zorg dat ster-toggle en lijst weer zichtbaar zijn)
+dayModalEls.cancelBtn.addEventListener("click",()=>{
+  // Maak ster-rij en lijst weer zichtbaar voor list-view
+  dayModalEls.meetList.style.display = "";
+  dayModalEls.star.parentElement.style.display = "";
+  renderDayModalBody();
+});
+// Opslaan
+dayModalEls.saveBtn.addEventListener("click",()=>{
+  if(!dayModalState.ymd) return;
+  const vals = readMeetingFormValues();
+  let id = dayModalState.editingId;
+  let existing = id && cfg.meetings ? cfg.meetings[id] : null;
+  const meet = {
+    id: id || makeMeetingId(),
+    date: dayModalState.ymd,
+    slot: vals.slot,
+    people: vals.people,
+    note: vals.note,
+    done: existing ? !!existing.done : false,
+    doneAt: existing ? existing.doneAt : null,
+    doneNote: existing ? existing.doneNote : ""
+  };
+  saveMeeting(meet);
+  dayModalEls.meetList.style.display = "";
+  dayModalEls.star.parentElement.style.display = "";
+  renderDayModalBody();
+  renderCalendar();
+});
+// Verwijderen
+dayModalEls.delBtn.addEventListener("click",()=>{
+  if(!dayModalState.editingId) return;
+  if(!confirm("Deze vergaderzaal-boeking verwijderen?")) return;
+  deleteMeeting(dayModalState.editingId);
+  dayModalEls.meetList.style.display = "";
+  dayModalEls.star.parentElement.style.display = "";
+  renderDayModalBody();
+  renderCalendar();
+});
+// "✓ Vergaderzaal klaar" → toon finish-form
+dayModalEls.doneBtn.addEventListener("click",()=>{
+  showMeetingFinishForm();
+});
+// Vinkje weghalen
+dayModalEls.undoBtn.addEventListener("click",()=>{
+  const id = dayModalState.editingId;
+  if(!id) return;
+  const m = cfg.meetings && cfg.meetings[id];
+  if(!m) return;
+  m.done = false;
+  m.doneAt = null;
+  m.doneNote = "";
+  saveMeeting(m);
+  showMeetingForm(id);
+  renderCalendar();
+});
+// Finish-bevestigen → markeren als klaar + WhatsApp
+dayModalEls.finishConfirm.addEventListener("click",()=>{
+  const id = dayModalState.editingId;
+  if(!id) return;
+  const m = cfg.meetings && cfg.meetings[id];
+  if(!m || m.deleted) return;
+  const kuisNote = (dayModalEls.kuisNote.value||"").trim();
+  m.done = true;
+  m.doneAt = new Date().toISOString();
+  m.doneNote = kuisNote;
+  saveMeeting(m);
+  // Bouw WhatsApp-bericht
+  const phone = (cfg.notify && cfg.notify.phone) || "";
+  const now = new Date();
+  const hhmm = String(now.getHours()).padStart(2,"0") + ":" + String(now.getMinutes()).padStart(2,"0");
+  let text = `🧹 Vergaderzaal is klaar — ${slotLabel(m.slot)} — ${hhmm}`;
+  if(kuisNote) text += `\n📝 ${kuisNote}`;
+  const url = buildWhatsAppUrl(phone, text);
+  if(url) openWhatsApp(url);
+  // Sluit modal en herteken
+  closeDayModal();
+  renderCalendar();
+});
+
+// Sluit-knoppen + ESC + backdrop
+dayModalEls.close.addEventListener("click", closeDayModal);
+dayModalEls.backdrop.addEventListener("click",(e)=>{ if(e.target===dayModalEls.backdrop) closeDayModal(); });
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && dayModalEls.backdrop.classList.contains("show")) closeDayModal(); });
+
 /* darken/lighten a hex color for the header gradient */
 function shadeColor(hex, percent){
   const h = (hex||"").replace("#","");
@@ -1750,8 +2247,8 @@ function mergeConfigs(local, remote){
     }
   }
 
-  // Per-key sections: guestCounts, cleanings, notes
-  for(const sec of ["guestCounts","cleanings","notes"]){
+  // Per-key sections: guestCounts, cleanings, notes, meetings, cleaningDays
+  for(const sec of ["guestCounts","cleanings","notes","meetings","cleaningDays"]){
     const res = mergeTsObjects(local[sec]||{}, (lt[sec]||{}), remote[sec]||{}, (rt[sec]||{}));
     merged[sec] = res.data;
     merged._ts[sec] = res.ts;
