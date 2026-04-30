@@ -112,12 +112,12 @@
   .cal-toolbar h2{font-size:22px;letter-spacing:-.3px;text-transform:capitalize;font-weight:700}
   .cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;color:var(--muted);align-items:center}
   .cal-legend .sw{display:inline-block;width:16px;height:12px;border-radius:4px;vertical-align:middle;margin-right:5px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);background:#fbfaf5;border:1px solid var(--border);border-bottom:none;border-radius:14px 14px 0 0;overflow:hidden}
-  .cal-weekdays > div{padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#7a8094;font-weight:600;border-right:1px solid var(--border);text-align:center}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#fbfaf5;border:1px solid var(--border);border-bottom:none;border-radius:14px 14px 0 0;overflow:hidden}
+  .cal-weekdays > div{padding:10px 0;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#7a8094;font-weight:600;border-right:1px solid var(--border);text-align:center;min-width:0}
   .cal-weekdays > div:last-child{border-right:none}
   .cal-weekdays > div.we{color:#b07a3a}
   .cal-weeks{border:1px solid var(--border);border-top:none;border-radius:0 0 14px 14px;background:#fff;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-  .cal-week{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:min-content;border-top:1px solid var(--border);position:relative;row-gap:0;padding-bottom:6px}
+  .cal-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:min-content;border-top:1px solid var(--border);position:relative;row-gap:0;padding-bottom:6px}
   .cal-week:first-child{border-top:none}
   .day-cell{grid-row:1;border-right:1px solid #efece4;padding:8px 10px 2px;min-height:36px;transition:background .15s}
   .day-cell:last-child{border-right:none}
@@ -190,9 +190,11 @@
   /* Rode kuisdag-ster: rechtsboven in de daycel, alleen zichtbaar als gezet */
   .cleaning-star-overlay{position:absolute;top:2px;right:4px;font-size:14px;line-height:1;color:#dc2626;text-shadow:0 1px 2px rgba(0,0,0,.2);pointer-events:none;z-index:2}
   .cleaning-star-overlay.large{font-size:16px}
-  /* "Vergaderzaal toevoegen" hint icoon onderaan rechts (verschijnt bij hover/touch) */
-  .day-add-hint{position:absolute;bottom:1px;right:3px;font-size:11px;color:var(--muted);opacity:0;transition:opacity .15s;pointer-events:none;z-index:1;font-weight:600;background:rgba(255,255,255,.7);border-radius:3px;padding:0 4px}
-  .day-cell:hover .day-add-hint{opacity:.55}
+  /* "Tik voor acties" badge: altijd zichtbaar, paars (=vergaderzaal-kleur) — duidelijke affordance op mobiele telefoons. */
+  .day-add-hint{position:absolute;bottom:2px;right:3px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1;pointer-events:none;z-index:2;box-shadow:0 1px 3px rgba(124,58,237,.45);opacity:.85;transition:opacity .15s,transform .1s}
+  .day-cell:hover .day-add-hint{opacity:1;transform:scale(1.08)}
+  .day-cell.other-month .day-add-hint{display:none}
+  .day-cell.today .day-add-hint{box-shadow:0 1px 3px rgba(124,58,237,.6),0 0 0 2px rgba(255,255,255,.6)}
   /* Day-actions modal kleur (paars, want vergaderzaal) */
   #day-modal-head{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
   /* Sectie binnen day-modal voor bestaande vergaderingen */
@@ -216,6 +218,16 @@
   .meeting-form .slot-row input[type=radio]{position:absolute;opacity:0;pointer-events:none}
   .meeting-form .slot-row label.sel{background:#7c3aed;border-color:#7c3aed;color:#fff}
   .meeting-form .slot-row label:has(input:checked){background:#7c3aed;border-color:#7c3aed;color:#fff}
+
+  /* Hint card onder kalender */
+  .card-tip{background:#fbf9ff;border:1px solid #ddd6fe;border-radius:10px;padding:10px 12px;margin-top:12px}
+  .hint-pill.purple{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-weight:700;font-size:12px;line-height:1;vertical-align:middle;box-shadow:0 1px 2px rgba(124,58,237,.4)}
+
+  /* Toast onderaan voor sync-feedback */
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:rgba(20,22,30,.92);color:#fff;padding:11px 16px;border-radius:999px;font-size:13.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100;opacity:0;transition:opacity .2s, transform .2s;pointer-events:none;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.ok{background:linear-gradient(135deg,#16a34a,#15803d)}
+  .toast.err{background:linear-gradient(135deg,#a2271a,#7f1d1d)}
 
   /* Modal */
   .modal-backdrop{position:fixed;inset:0;background:rgba(20,22,30,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -274,25 +286,29 @@
     .cal-legend{margin-left:0;font-size:11px;gap:6px 10px;flex:1 1 100%;justify-content:flex-start}
     .cal-legend .sw{width:12px;height:10px;margin-right:3px}
     /* Weekdagnamen kleiner */
-    .cal-weekdays > div{padding:6px 2px;font-size:10px;letter-spacing:.6px}
-    /* Dagcellen compacter */
+    .cal-weekdays > div{padding:6px 0;font-size:10px;letter-spacing:.5px;border-right-color:#ece9e0}
+    /* Dagcellen: dag-nummer GECENTREERD bovenaan zodat balk eronder duidelijk bij dezelfde kolom hoort */
     .cal-week{padding-bottom:4px}
-    .day-cell{padding:4px 3px 2px;min-height:32px}
-    .day-num{font-size:12px;gap:3px}
-    .day-num .n{min-width:16px;font-size:12px}
-    .day-cell.today .day-num .n{width:20px;height:20px;font-size:11px}
+    .day-cell{padding:3px 2px 2px;min-height:34px;border-right-color:#ece9e0}
+    .day-num{font-size:12.5px;gap:3px;justify-content:center;margin-bottom:1px}
+    .day-num .n{min-width:18px;font-size:12.5px;font-weight:700;text-align:center}
+    .day-cell.today .day-num .n{width:22px;height:22px;font-size:12px}
     .wissel-badge{font-size:7.5px;padding:2px 4px;letter-spacing:.4px}
-    /* Reservatiebalken compacter */
+    /* Reservatiebalken: NULL margin links/rechts op mobile zodat ze exact in hun kolom staan */
     .bar{
-      margin:1px 2px;
+      margin:1px 1px;
       padding:2px 5px;
       font-size:11px;
-      min-height:22px;
+      min-height:20px;
       gap:3px;
+      border-radius:4px;
     }
-    .bar.start{padding-left:8px;clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%)}
-    .bar.end{padding-right:8px;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%)}
-    .bar.start.end{padding-left:8px;padding-right:8px;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,6px 100%,0 50%)}
+    /* Op kleine schermen: GEEN clip-path arrow — die maakt visueel onleesbaar wat in welke kolom hoort */
+    .bar.start,.bar.end,.bar.start.end,.bar.mid{clip-path:none;padding-left:5px;padding-right:5px}
+    .bar.start:not(.end){border-radius:2px 6px 6px 2px;border-left:3px solid rgba(255,255,255,.55)}
+    .bar.end:not(.start){border-radius:6px 2px 2px 6px;border-right:3px solid rgba(255,255,255,.55)}
+    .bar.mid{border-radius:2px}
+    .bar.start.end{border-radius:6px}
     .bar .src-pill{display:none}
     .bar .ppl{font-size:10px;padding:1px 5px}
     .bar .check{font-size:10px;padding:1px 5px}
@@ -327,13 +343,15 @@
   @media (max-width:380px){
     .wrap{padding:8px}
     .bar .ppl{display:none}
-    .day-cell{padding:3px 2px 1px;min-height:28px}
-    .cal-weekdays > div{font-size:9.5px;padding:5px 1px}
-    .day-num{font-size:11px}
-    .day-num .n{min-width:14px;font-size:11px}
-    .day-cell.today .day-num .n{width:18px;height:18px;font-size:10.5px}
-    .bar{font-size:10px;padding:1px 4px;min-height:18px}
+    .day-cell{padding:2px 1px 1px;min-height:30px}
+    .cal-weekdays > div{font-size:9.5px;padding:5px 0}
+    .day-num{font-size:12px;justify-content:center}
+    .day-num .n{min-width:16px;font-size:12px;font-weight:700}
+    .day-cell.today .day-num .n{width:20px;height:20px;font-size:11px}
+    .bar{font-size:10px;padding:1px 4px;min-height:18px;margin:1px}
     .bar .name{font-size:10px}
+    .day-add-hint{width:15px;height:15px;font-size:11px;bottom:1px;right:1px}
+    .cleaning-star-overlay{font-size:13px;top:1px;right:2px}
   }
 
   @media print{
@@ -383,9 +401,10 @@
       </div>
       <div id="cal-banner"></div>
       <div id="cal-body"></div>
-      <p class="muted" style="margin-top:10px;font-size:12.5px">
-        Tip: klik op een balk om het aantal personen in te vullen of aan te passen. Een <span class="wissel-badge" style="position:static;display:inline-block;margin:0 2px">⇆ WISSEL</span> betekent dat er die dag zowel een check-out als een check-in is in dezelfde kamer.
-      </p>
+      <div class="card-tip">
+        <p style="margin:0 0 6px 0;font-size:13px"><b>📅 Tik op een dag</b> om een <b style="color:#7c3aed">vergaderzaal</b> toe te voegen of een <b style="color:#dc2626">★ kuisdag</b> aan te duiden. Het paarse <span class="hint-pill purple">+</span>-bolletje rechtsonder elke dag wijst je daarop.</p>
+        <p style="margin:0;font-size:12.5px;color:var(--muted)">Tik op een <b>boekingsbalk</b> om het aantal personen of een notitie in te vullen. Een <span class="wissel-badge" style="position:static;display:inline-block;margin:0 2px">⇆ WISSEL</span> betekent dat er die dag zowel een check-out als een check-in is in dezelfde kamer.</p>
+      </div>
     </div>
   </section>
 
@@ -576,6 +595,9 @@
     </div>
   </div>
 </div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <!-- Day-actions modal: rode ster + vergaderzaal toevoegen/bewerken -->
 <div class="modal-backdrop" id="day-modal-backdrop">
@@ -1641,6 +1663,8 @@ function saveMeeting(meet){
   cfg.meetings[meet.id] = meet;
   stampTs("meetings", meet.id);
   saveCfg();
+  // Direct naar cloud — niet wachten op 2s timer
+  if(syncEnabled()) cloudSyncOnce({toast:true});
 }
 function deleteMeeting(id){
   if(!cfg.meetings) return;
@@ -1648,6 +1672,7 @@ function deleteMeeting(id){
   cfg.meetings[id] = { id, deleted:true };
   stampTs("meetings", id);
   saveCfg();
+  if(syncEnabled()) cloudSyncOnce({toast:true});
 }
 function isMeetingDone(meet){ return !!(meet && meet.done); }
 function slotLabel(slot){
@@ -1672,6 +1697,7 @@ function toggleCleaningDay(ymdStr){
   else { cfg.cleaningDays[ymdStr] = true; }
   stampTs("cleaningDays", ymdStr);
   saveCfg();
+  if(syncEnabled()) cloudSyncOnce({toast:true});
 }
 
 function openBookingModal(ev){
@@ -1870,6 +1896,17 @@ modalEls.undo.addEventListener("click",()=>{
   updateModalDoneState();
   renderCalendar();
 });
+
+/* ---------- Toast helper ---------- */
+let _toastEl = null, _toastTimer = null;
+function showToast(msg, kind, durationMs){
+  if(!_toastEl) _toastEl = document.getElementById("toast");
+  if(!_toastEl) return;
+  _toastEl.textContent = msg;
+  _toastEl.className = "toast show" + (kind?(" "+kind):"");
+  if(_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>{ _toastEl.classList.remove("show"); }, durationMs||2400);
+}
 
 /* ---------- Day-actions modal (rode ster + vergaderzaal) ---------- */
 const dayModalEls = {
@@ -2079,6 +2116,7 @@ dayModalEls.saveBtn.addEventListener("click",()=>{
   dayModalEls.star.parentElement.style.display = "";
   renderDayModalBody();
   renderCalendar();
+  if(syncEnabled()) showToast("📤 Vergaderzaal wordt naar cloud gestuurd…");
 });
 // Verwijderen
 dayModalEls.delBtn.addEventListener("click",()=>{
@@ -2286,8 +2324,9 @@ async function cloudPut(payload){
   return true;
 }
 
-async function cloudSyncOnce(){
+async function cloudSyncOnce(opts){
   if(!syncEnabled() || SYNC.inFlight) return;
+  const showFeedback = !!(opts && opts.toast);
   SYNC.inFlight = true; setSyncPill();
   try{
     let remote = null;
@@ -2335,10 +2374,12 @@ async function cloudSyncOnce(){
     cfg.sync.lastStatus = "ok";
     saveCfg({ sync:false });
     setSyncMessage("✓ Gesynchroniseerd om " + new Date().toLocaleTimeString("nl-BE",{hour:"2-digit",minute:"2-digit"}), "ok");
+    if(showFeedback) showToast("✓ Wijziging in cloud — kuisvrouw kan ze zien", "ok");
   } catch(e){
     cfg.sync.lastStatus = "err";
     saveCfg({ sync:false });
     setSyncMessage("⚠ Synchronisatie mislukt: " + e.message, "err");
+    if(showFeedback) showToast("⚠ Cloud-sync mislukt: " + e.message, "err", 4000);
   } finally {
     SYNC.inFlight = false;
     setSyncPill();
@@ -2354,7 +2395,7 @@ function schedulePeriodicPull(){
   if(SYNC.pullTimer) clearInterval(SYNC.pullTimer);
   SYNC.pullTimer = setInterval(()=>{
     if(syncEnabled() && !SYNC.inFlight && !document.hidden) cloudSyncOnce();
-  }, 20000);
+  }, 10000);
 }
 document.addEventListener("visibilitychange", ()=>{
   if(!document.hidden && syncEnabled()) cloudSyncOnce();
