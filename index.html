@@ -190,11 +190,11 @@
   /* Rode kuisdag-ster: rechtsboven in de daycel, alleen zichtbaar als gezet */
   .cleaning-star-overlay{position:absolute;top:2px;right:4px;font-size:14px;line-height:1;color:#dc2626;text-shadow:0 1px 2px rgba(0,0,0,.2);pointer-events:none;z-index:2}
   .cleaning-star-overlay.large{font-size:16px}
-  /* "Tik voor acties" badge: altijd zichtbaar, paars (=vergaderzaal-kleur) — duidelijke affordance op mobiele telefoons. */
-  .day-add-hint{position:absolute;bottom:2px;right:3px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1;pointer-events:none;z-index:2;box-shadow:0 1px 3px rgba(124,58,237,.45);opacity:.85;transition:opacity .15s,transform .1s}
-  .day-cell:hover .day-add-hint{opacity:1;transform:scale(1.08)}
+  /* "Tik voor acties" badge: altijd zichtbaar, lichtgrijs — discrete affordance op mobiele telefoons. */
+  .day-add-hint{position:absolute;bottom:2px;right:3px;width:18px;height:18px;border-radius:50%;background:#e5e7eb;color:#6b7280;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1;pointer-events:none;z-index:2;box-shadow:0 1px 2px rgba(0,0,0,.08);opacity:.85;transition:opacity .15s,transform .1s}
+  .day-cell:hover .day-add-hint{opacity:1;transform:scale(1.08);background:#d1d5db;color:#374151}
   .day-cell.other-month .day-add-hint{display:none}
-  .day-cell.today .day-add-hint{box-shadow:0 1px 3px rgba(124,58,237,.6),0 0 0 2px rgba(255,255,255,.6)}
+  .day-cell.today .day-add-hint{box-shadow:0 1px 2px rgba(0,0,0,.12),0 0 0 2px rgba(255,255,255,.6)}
   /* Day-actions modal kleur (paars, want vergaderzaal) */
   #day-modal-head{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
   /* Sectie binnen day-modal voor bestaande vergaderingen */
@@ -221,7 +221,7 @@
 
   /* Hint card onder kalender */
   .card-tip{background:#fbf9ff;border:1px solid #ddd6fe;border-radius:10px;padding:10px 12px;margin-top:12px}
-  .hint-pill.purple{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-weight:700;font-size:12px;line-height:1;vertical-align:middle;box-shadow:0 1px 2px rgba(124,58,237,.4)}
+  .hint-pill.purple{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#e5e7eb;color:#6b7280;font-weight:700;font-size:12px;line-height:1;vertical-align:middle;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 
   /* Toast onderaan voor sync-feedback */
   .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:rgba(20,22,30,.92);color:#fff;padding:11px 16px;border-radius:999px;font-size:13.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100;opacity:0;transition:opacity .2s, transform .2s;pointer-events:none;max-width:90vw;text-align:center}
@@ -402,7 +402,7 @@
       <div id="cal-banner"></div>
       <div id="cal-body"></div>
       <div class="card-tip">
-        <p style="margin:0 0 6px 0;font-size:13px"><b>📅 Tik op een dag</b> om een <b style="color:#7c3aed">vergaderzaal</b> toe te voegen of een <b style="color:#dc2626">★ kuisdag</b> aan te duiden. Het paarse <span class="hint-pill purple">+</span>-bolletje rechtsonder elke dag wijst je daarop.</p>
+        <p style="margin:0 0 6px 0;font-size:13px"><b>📅 Tik op een dag</b> om een <b style="color:#7c3aed">vergaderzaal</b> toe te voegen of een <b style="color:#dc2626">★ kuisdag</b> aan te duiden. Het <span class="hint-pill purple">+</span>-bolletje rechtsonder elke dag wijst je daarop.</p>
         <p style="margin:0;font-size:12.5px;color:var(--muted)">Tik op een <b>boekingsbalk</b> om het aantal personen of een notitie in te vullen. Een <span class="wissel-badge" style="position:static;display:inline-block;margin:0 2px">⇆ WISSEL</span> betekent dat er die dag zowel een check-out als een check-in is in dezelfde kamer.</p>
       </div>
     </div>
