@@ -870,7 +870,8 @@ function feedBlock(accIdx, src){
   const idBase = "f"+accIdx+"-"+key;
   let inner = "";
   if(f.mode==="url"){
-    inner = `<input class="url" placeholder="https://..." value="${escapeHtml(f.url||"")}" data-url="${accIdx}|${key}" />`;
+    const urlHint = src==="Booking" ? `<div class="muted" style="font-size:11.5px;margin-top:4px">⚠ Booking.com blokkeert vaak automatisch ophalen. Als je "geen proxy werkte" ziet, schakel dan over naar <b>Tekst plakken</b>.</div>` : "";
+    inner = `<input class="url" placeholder="https://..." value="${escapeHtml(f.url||"")}" data-url="${accIdx}|${key}" />${urlHint}`;
   } else if(f.mode==="text"){
     inner = `<textarea class="ics" placeholder="Plak hier de volledige inhoud van de .ics-feed (begint met BEGIN:VCALENDAR)" data-text="${accIdx}|${key}">${escapeHtml(f.text||"")}</textarea>`;
   } else if(f.mode==="file"){
@@ -1274,9 +1275,15 @@ async function refresh(){
       return `✗ ${r.acc} · ${r.src}: ${r.reason}${d}`;
     }).join("\n");
     bannerArea.innerHTML = `<div class="banner err">
-      ${errCount} feed(s) faalden, ${okCount} feed(s) gelukt (${events.length} reservatie(s)).
-      <details><summary>Toon details</summary><pre>${escapeHtml(details)}</pre></details>
-      <div style="margin-top:6px;font-size:12.5px">Tip: ga naar <b>Instellingen</b> en schakel de <i>methode</i> van een falende feed om naar <b>Tekst plakken</b> of <b>Bestand uploaden</b> — dat werkt altijd.</div>
+      <b>⚠ ${errCount} feed(s) konden niet opgehaald worden via proxy.</b>
+      Booking.com blokkeert steeds vaker automatisch ophalen. Gebruik de alternatieve methode:
+      <ol style="margin:8px 0 4px;padding-left:18px;font-size:13px;line-height:1.7">
+        <li>Ga naar <b>Instellingen → jouw kamer → Booking-feed → Methode: Tekst plakken</b></li>
+        <li>Open de iCal-URL van Booking.com in een nieuw browsertabblad</li>
+        <li>Selecteer alles (<kbd>Ctrl/Cmd+A</kbd>), kopieer (<kbd>Ctrl/Cmd+C</kbd>)</li>
+        <li>Plak de tekst in het tekstvak in de app</li>
+      </ol>
+      <details style="margin-top:4px"><summary style="cursor:pointer;font-size:12px">Technische details</summary><pre style="font-size:11px;margin-top:4px">${escapeHtml(details)}</pre></details>
     </div>`;
   }
   statusEl.textContent = `Laatst ververst: ${new Date().toLocaleString("nl-BE")}`;
