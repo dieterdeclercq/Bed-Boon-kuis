@@ -180,18 +180,11 @@
 
   .cal-empty{padding:28px;text-align:center;color:var(--muted)}
 
-  /* check-in start op 60% van de check-in dag */
-  .bar.checkin-late { margin-left: calc(100% / 7 * 0.60); }
-  /* aparte checkout-sliver balk (geen tekst, enkel kleurstrip) */
-  .checkout-pip {
-    grid-column: var(--cstart) / var(--cend);
-    grid-row: var(--lane);
-    margin: 3px calc(100% / 7 * 0.80) 3px 4px;
-    border-radius: 4px;
-    min-height: 20px;
-    opacity: .85;
-    pointer-events: none;
-  }
+  /* Balk start op 50% van de check-in dag */
+  .bar.checkin-late  { margin-left:  calc(100% / 7 * 0.5); }
+  /* Balk eindigt op 25% van de checkout-dag (75% weggeclipped rechts) */
+  .bar.checkout-sliver { margin-right: calc(100% / 7 * 0.75); }
+  /* Pijlvorm van .bar.end werkt gewoon met de marge — geen clip-path override nodig */
 
   /* ---- Speciale events (restaurant, …) ---- */
   .bar.special-event { clip-path: none !important; border-radius: 6px; border: 2px solid rgba(255,255,255,.35); cursor: pointer; }
@@ -1683,11 +1676,12 @@ function renderCalendar(){
       const ev = s.ev;
       const cls = ["bar"];
       if(s.hasStart){ cls.push("start"); cls.push("checkin-late"); }
-      if(s.hasEnd)   cls.push("end");
+      if(s.hasEnd)  { cls.push("end");   cls.push("checkout-sliver"); }
       if(!s.hasStart && !s.hasEnd) cls.push("mid");
-      // Hoofdbalk eindigt op de normale endCol (GEEN uitbreiding in checkout-dag).
-      // De checkout-pip hieronder toont het gekleurde stukje op de checkout-dag.
-      const renderEndCol = s.endCol;
+      // Balk loopt door TOT op de checkout-dag (endCol+1).
+      // checkin-late (margin-left 50%) en checkout-sliver (margin-right 75%)
+      // zorgen voor de juiste visuele afkapping met pijlen.
+      const renderEndCol = s.hasEnd ? Math.min(8, s.endCol + 1) : s.endCol;
       const isDone = isCleaningDone(ev);
       if(isDone) cls.push("done");
       const color = accColor(ev.accName);
@@ -1701,22 +1695,17 @@ function renderCalendar(){
       const title = `${ev.accName} — ${ev.source}\n${ev.start.toLocaleDateString("nl-BE")} → ${ev.end.toLocaleDateString("nl-BE")}${hasNote?"\n📝 "+note.replace(/\n/g," · "):""}\nKlik voor details${isDone?" · ✓ gekuist":""}`;
       const dataKey = bookingKey(ev);
       const notePill = hasNote ? `<span class="note-pill" title="${escapeHtml(note)}">📝 ${escapeHtml(notePreview)}</span>` : "";
+      // Personen-badge: op checkout-balken niet rechts uitlijnen (valt in geclipte zone)
+      const pplStyle = s.hasEnd ? 'style="margin-left:6px"' : '';
       const rightBadge = isDone
         ? `<span class="check">✓ klaar</span>`
-        : `<span class="ppl">👤 ${escapeHtml(String(pplTxt))}</span>`;
+        : `<span class="ppl" ${pplStyle}>👤 ${escapeHtml(String(pplTxt))}</span>`;
       html += `<div class="${cls.join(" ")}" style="--bar-bg:${color};--cstart:${s.startCol};--cend:${renderEndCol};--lane:${2+s.lane}" data-bookkey="${escapeHtml(dataKey)}" title="${escapeHtml(title)}">
         <span class="src-pill">${escapeHtml(srcLabel)}</span>
         <span class="name">${escapeHtml(ev.accName)}</span>
         ${notePill}
         ${rightBadge}
       </div>`;
-      // Checkout-pip: apart gekleurd blokje op de checkout-dag zelf (geen tekst).
-      // Geeft visueel aan dat de gast die ochtend vertrekt.
-      if(s.hasEnd && s.endCol <= 7){
-        const pipCol = s.endCol;
-        const pipColor = isDone ? '#16a34a' : color;
-        html += `<div class="checkout-pip" style="background:${pipColor};--cstart:${pipCol};--cend:${Math.min(8,pipCol+1)};--lane:${2+s.lane}" title="Check-out ${escapeHtml(ev.accName)}"></div>`;
-      }
     }
 
     // vergaderzaal bars
