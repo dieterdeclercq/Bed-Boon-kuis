@@ -180,11 +180,18 @@
 
   .cal-empty{padding:28px;text-align:center;color:var(--muted)}
 
-  /* ---- Check-in laat / Check-out sliver ---- */
-  .bar.checkin-late  { margin-left:  calc(100% / 7 * 0.5); }
-  .bar.checkout-sliver { margin-right: calc(100% / 7 * 0.75); }
-  .bar.checkout-sliver.end:not(.start) { clip-path: none; border-radius: 4px; }
-  .bar.checkout-sliver.start.end       { clip-path: polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%); }
+  /* check-in start op 60% van de check-in dag */
+  .bar.checkin-late { margin-left: calc(100% / 7 * 0.60); }
+  /* aparte checkout-sliver balk (geen tekst, enkel kleurstrip) */
+  .checkout-pip {
+    grid-column: var(--cstart) / var(--cend);
+    grid-row: var(--lane);
+    margin: 3px calc(100% / 7 * 0.80) 3px 4px;
+    border-radius: 4px;
+    min-height: 20px;
+    opacity: .85;
+    pointer-events: none;
+  }
 
   /* ---- Speciale events (restaurant, …) ---- */
   .bar.special-event { clip-path: none !important; border-radius: 6px; border: 2px solid rgba(255,255,255,.35); cursor: pointer; }
@@ -408,7 +415,6 @@
         <button id="cal-today" class="small">Vandaag</button>
         <button id="cal-next" class="small">▶</button>
         <h2 id="cal-title" style="margin:0 0 0 6px"></h2>
-        <button id="cal-add-event" class="small no-print" style="margin-left:6px">＋ Event</button>
         <span id="cal-legend" class="cal-legend"></span>
       </div>
       <div id="cal-banner"></div>
@@ -640,8 +646,9 @@
         <button id="day-modal-star" class="star-btn-big" type="button">☆ Kuisdag aanduiden</button>
       </div>
       <div id="day-modal-meet-list" style="margin-top:8px"></div>
-      <div class="row" style="margin-top:10px">
+      <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap">
         <button id="day-modal-add-meet" class="add-meet-btn-big" type="button">+ Vergaderzaal toevoegen</button>
+        <button id="day-modal-add-event" type="button" style="padding:10px 14px;border:1px solid #d8b4fe;background:#f5f3ff;color:#7e22ce;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">🍽️ Event toevoegen</button>
       </div>
       <!-- Inline form voor toevoegen/bewerken vergaderzaal -->
       <div id="meeting-form" class="meeting-form" style="display:none">
@@ -736,7 +743,7 @@ const DEFAULT_PROXIES = [
   { id:"corsproxy",  label:"corsproxy.io",        enabled:true,  url: u => "https://corsproxy.io/?" + encodeURIComponent(u) },
   { id:"allorigins", label:"api.allorigins.win",  enabled:true,  url: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) },
   { id:"codetabs",   label:"api.codetabs.com",    enabled:true,  url: u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u) },
-  { id:"thingproxy", label:"thingproxy.freeboard.io", enabled:false, url: u => "https://thingproxy.freeboard.io/fetch/" + u },
+  { id:"thingproxy", label:"thingproxy.freeboard.io", enabled:true, url: u => "https://thingproxy.freeboard.io/fetch/" + u },
   { id:"direct",     label:"Direct (geen proxy)", enabled:false, url: u => u }
 ];
 function defaultCfg(){ return {
@@ -1275,15 +1282,9 @@ async function refresh(){
       return `✗ ${r.acc} · ${r.src}: ${r.reason}${d}`;
     }).join("\n");
     bannerArea.innerHTML = `<div class="banner err">
-      <b>⚠ ${errCount} feed(s) konden niet opgehaald worden via proxy.</b>
-      Booking.com blokkeert steeds vaker automatisch ophalen. Gebruik de alternatieve methode:
-      <ol style="margin:8px 0 4px;padding-left:18px;font-size:13px;line-height:1.7">
-        <li>Ga naar <b>Instellingen → jouw kamer → Booking-feed → Methode: Tekst plakken</b></li>
-        <li>Open de iCal-URL van Booking.com in een nieuw browsertabblad</li>
-        <li>Selecteer alles (<kbd>Ctrl/Cmd+A</kbd>), kopieer (<kbd>Ctrl/Cmd+C</kbd>)</li>
-        <li>Plak de tekst in het tekstvak in de app</li>
-      </ol>
-      <details style="margin-top:4px"><summary style="cursor:pointer;font-size:12px">Technische details</summary><pre style="font-size:11px;margin-top:4px">${escapeHtml(details)}</pre></details>
+      <b>⚠ ${errCount} feed(s) konden niet opgehaald worden.</b>
+      <details open style="margin-top:6px"><summary style="cursor:pointer;font-size:12.5px;font-weight:600">Toon wat er misging per proxy ▾</summary><pre style="font-size:11.5px;margin-top:6px;white-space:pre-wrap">${escapeHtml(details)}</pre></details>
+      <div style="margin-top:8px;font-size:12px;color:#7a3a1a">Lukt het herhaaldelijk niet? Probeer <b>Instellingen → feed → Tekst plakken</b> als tijdelijke oplossing.</div>
     </div>`;
   }
   statusEl.textContent = `Laatst ververst: ${new Date().toLocaleString("nl-BE")}`;
@@ -1640,7 +1641,15 @@ function renderCalendar(){
     const weekEndExcl = addDays(weekStart,7);
     // compute bar segments for this week — eerst boekingen, dan vergaderzaal eronder
     const bookingSegs = segmentsForWeek(weekStart, events);
-    const bookingLanes = assignLanes(bookingSegs);
+    // Vaste rij per kamer: elke accommodatie krijgt altijd dezelfde lijn,
+    // gebaseerd op de volgorde in Instellingen. Zo komen Boonapart en Bed en Boon
+    // nooit op dezelfde rij, ook niet als ze gelijktijdig geboekt zijn.
+    const accNames = cfg.accommodations.map(a => a.name || "(naamloos)");
+    for(const s of bookingSegs){
+      const idx = accNames.indexOf(s.ev.accName);
+      s.lane = idx >= 0 ? idx : accNames.length;
+    }
+    const bookingLanes = Math.max(accNames.length, 1);
     const meetingSegs = meetingSegmentsForWeek(weekStart);
     const meetingLanes = assignLanes(meetingSegs);
     // Vergaderzaal-lanes verschuiven onder de booking-lanes
@@ -1674,10 +1683,11 @@ function renderCalendar(){
       const ev = s.ev;
       const cls = ["bar"];
       if(s.hasStart){ cls.push("start"); cls.push("checkin-late"); }
-      if(s.hasEnd)  { cls.push("end");   cls.push("checkout-sliver"); }
+      if(s.hasEnd)   cls.push("end");
       if(!s.hasStart && !s.hasEnd) cls.push("mid");
-      // Verleng endCol met 1 kolom voor checkout-sliver (sliver zichtbaar op checkout-dag zelf)
-      const renderEndCol = s.hasEnd ? Math.min(8, s.endCol + 1) : s.endCol;
+      // Hoofdbalk eindigt op de normale endCol (GEEN uitbreiding in checkout-dag).
+      // De checkout-pip hieronder toont het gekleurde stukje op de checkout-dag.
+      const renderEndCol = s.endCol;
       const isDone = isCleaningDone(ev);
       if(isDone) cls.push("done");
       const color = accColor(ev.accName);
@@ -1700,6 +1710,13 @@ function renderCalendar(){
         ${notePill}
         ${rightBadge}
       </div>`;
+      // Checkout-pip: apart gekleurd blokje op de checkout-dag zelf (geen tekst).
+      // Geeft visueel aan dat de gast die ochtend vertrekt.
+      if(s.hasEnd && s.endCol <= 7){
+        const pipCol = s.endCol;
+        const pipColor = isDone ? '#16a34a' : color;
+        html += `<div class="checkout-pip" style="background:${pipColor};--cstart:${pipCol};--cend:${Math.min(8,pipCol+1)};--lane:${2+s.lane}" title="Check-out ${escapeHtml(ev.accName)}"></div>`;
+      }
     }
 
     // vergaderzaal bars
@@ -2166,6 +2183,7 @@ const dayModalEls = {
   star:     document.getElementById("day-modal-star"),
   meetList: document.getElementById("day-modal-meet-list"),
   addMeet:  document.getElementById("day-modal-add-meet"),
+  addEvent: document.getElementById("day-modal-add-event"),
   form:     document.getElementById("meeting-form"),
   formTitle:document.getElementById("meeting-form-title"),
   people:   document.getElementById("meet-people"),
@@ -2185,6 +2203,7 @@ function openDayModal(ymdStr, opts){
   dayModalState.ymd = ymdStr;
   dayModalState.editingId = null;
   dayModalState.mode = "list";
+  dayModalEls.backdrop._currentYmd = ymdStr; // bewaar datum voor event-knop
   // Mooie titel: "wo 29 apr 2026"
   const [Y,M,D] = ymdStr.split("-").map(Number);
   const d = new Date(Y, M-1, D);
@@ -2517,8 +2536,11 @@ seModal.del.addEventListener("click", ()=>{
   closeSpecialEventModal();
   renderCalendar();
 });
-document.getElementById("cal-add-event").addEventListener("click", ()=>{
-  openNewSpecialEventModal(ymd(calCursor));
+// "Event toevoegen" knop in de dag-modal opent de special event modal met de geselecteerde datum
+dayModalEls.addEvent.addEventListener("click", ()=>{
+  const dateStr = dayModalEls.backdrop._currentYmd || ymd(new Date());
+  closeDayModal();
+  openNewSpecialEventModal(dateStr);
 });
 
 /* ---------- Utils ---------- */
