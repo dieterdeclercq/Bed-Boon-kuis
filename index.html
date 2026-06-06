@@ -730,11 +730,15 @@
 /* ---------- Storage ---------- */
 const LS_KEY = "bnb-cleaning-planner-v5";
 const DEFAULT_PROXIES = [
-  { id:"corsproxy",  label:"corsproxy.io",        enabled:true,  url: u => "https://corsproxy.io/?" + encodeURIComponent(u) },
-  { id:"allorigins", label:"api.allorigins.win",  enabled:true,  url: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) },
-  { id:"codetabs",   label:"api.codetabs.com",    enabled:true,  url: u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u) },
-  { id:"thingproxy", label:"thingproxy.freeboard.io", enabled:true, url: u => "https://thingproxy.freeboard.io/fetch/" + u },
-  { id:"direct",     label:"Direct (geen proxy)", enabled:false, url: u => u }
+  // corsproxy.io: API veranderd — ?url= i.p.v. ? (was de oorzaak van HTTP 403)
+  { id:"corsproxy",   label:"corsproxy.io",              enabled:true,  url: u => "https://corsproxy.io/?url=" + encodeURIComponent(u) },
+  // allorigins /raw: directe tekst-respons
+  { id:"allorigins",  label:"allorigins.win (raw)",      enabled:true,  url: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) },
+  // allorigins /get: JSON-wrapper als /raw "Load failed" geeft — json-veld aangeduid
+  { id:"allorigins2", label:"allorigins.win (get/JSON)", enabled:true,  url: u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u), json:"contents" },
+  { id:"codetabs",    label:"api.codetabs.com",          enabled:true,  url: u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u) },
+  { id:"thingproxy",  label:"thingproxy.freeboard.io",   enabled:true,  url: u => "https://thingproxy.freeboard.io/fetch/" + u },
+  { id:"direct",      label:"Direct (geen proxy)",        enabled:false, url: u => u }
 ];
 function defaultCfg(){ return {
   accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})),
@@ -1100,21 +1104,31 @@ document.getElementById("btn-clear").addEventListener("click",()=>{
 });
 
 /* ---------- Fetch with proxy chain ---------- */
+const PROXY_TIMEOUT_MS = 12000; // 12s per proxy — voorkomt eindeloos hangen
+
 function proxyFns(){
   return DEFAULT_PROXIES
     .filter(p => (cfg.proxies.find(x=>x.id===p.id)||{enabled:p.enabled}).enabled)
-    .map(p => ({ id:p.id, label:p.label, build:p.url }));
+    .map(p => ({ id:p.id, label:p.label, build:p.url, json:p.json||null }));
 }
 async function fetchViaProxies(url){
   const tried = [];
   for(const p of proxyFns()){
     const pUrl = p.build(url);
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), PROXY_TIMEOUT_MS);
     try{
-      const res = await fetch(pUrl, {cache:"no-store"});
-      const txt = await res.text();
+      const res = await fetch(pUrl, { cache:"no-store", signal: ctrl.signal });
+      clearTimeout(timer);
       if(!res.ok){
         tried.push(`${p.label}: HTTP ${res.status}`);
         continue;
+      }
+      let txt = await res.text();
+      // JSON-wrapped proxy (bijv. allorigins /get retourneert {"contents":"BEGIN:VCALENDAR…"})
+      if(p.json){
+        try{ const j = JSON.parse(txt); txt = j[p.json] || ""; }
+        catch(e){ tried.push(`${p.label}: JSON parse fout — ${e.message}`); continue; }
       }
       if(!/BEGIN:VCALENDAR/i.test(txt)){
         tried.push(`${p.label}: antwoord is geen iCal (eerste 80 tekens: ${txt.slice(0,80).replace(/\s+/g," ")}…)`);
@@ -1122,7 +1136,12 @@ async function fetchViaProxies(url){
       }
       return { ok:true, text:txt, proxy:p.label, tried };
     }catch(e){
-      tried.push(`${p.label}: ${e.message}`);
+      clearTimeout(timer);
+      if(e.name === "AbortError"){
+        tried.push(`${p.label}: timeout na ${PROXY_TIMEOUT_MS/1000}s`);
+      } else {
+        tried.push(`${p.label}: ${e.message}`);
+      }
     }
   }
   return { ok:false, tried };
