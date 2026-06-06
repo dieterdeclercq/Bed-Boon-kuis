@@ -180,6 +180,17 @@
 
   .cal-empty{padding:28px;text-align:center;color:var(--muted)}
 
+  /* ---- Check-in laat / Check-out sliver ---- */
+  .bar.checkin-late  { margin-left:  calc(100% / 7 * 0.5); }
+  .bar.checkout-sliver { margin-right: calc(100% / 7 * 0.75); }
+  .bar.checkout-sliver.end:not(.start) { clip-path: none; border-radius: 4px; }
+  .bar.checkout-sliver.start.end       { clip-path: polygon(10px 0,100% 0,100% 100%,10px 100%,0 50%); }
+
+  /* ---- Speciale events (restaurant, …) ---- */
+  .bar.special-event { clip-path: none !important; border-radius: 6px; border: 2px solid rgba(255,255,255,.35); cursor: pointer; }
+  .bar.special-event .event-icon { font-size: 13px; flex-shrink: 0; }
+  .semodal-head { background: linear-gradient(135deg,#7e22ce,#581c87); }
+
   /* ---------- Vergaderzaal (meeting room) ---------- */
   .bar.meeting{--bar-bg:#7c3aed;background:linear-gradient(180deg,#a78bfa 0%,#7c3aed 100%) !important;color:#fff}
   .bar.meeting.done{--bar-bg:#16a34a !important;background:linear-gradient(90deg,#16a34a,#15803d) !important}
@@ -397,6 +408,7 @@
         <button id="cal-today" class="small">Vandaag</button>
         <button id="cal-next" class="small">▶</button>
         <h2 id="cal-title" style="margin:0 0 0 6px"></h2>
+        <button id="cal-add-event" class="small no-print" style="margin-left:6px">＋ Event</button>
         <span id="cal-legend" class="cal-legend"></span>
       </div>
       <div id="cal-banner"></div>
@@ -464,8 +476,11 @@
 
     <div class="card">
       <h2>Cloud-synchronisatie <span id="sync-status-pill" class="muted" style="font-weight:400;font-size:12.5px;margin-left:6px"></span></h2>
+      <div id="sync-recover-hint" class="hint" style="display:none;margin-bottom:12px">
+        📡 <b>Data ontbreekt?</b> Vul je Bin ID en Master Key in, zet synchronisatie aan en klik op <b>↓ Haal alles op uit cloud</b> om je kamers en gegevens terug te halen.
+      </div>
       <p class="muted" style="margin-top:0">
-        Als je met meer dan één toestel werkt (bv. jouw gsm + die van de kuisvrouw), zorgt cloud-sync ervoor dat alle gegevens (notities, aantal personen, afgevinkte kuisjes en opmerkingen van de kuis) automatisch tussen de toestellen worden gedeeld. Gegevens worden opgeslagen via <a href="https://jsonbin.io" target="_blank" rel="noopener">JSONBin.io</a> — gratis tot 10.000 wijzigingen per maand.
+        Als je met meer dan één toestel werkt (bv. jouw gsm + die van de kuisvrouw), zorgt cloud-sync ervoor dat alle gegevens automatisch worden gedeeld via <a href="https://jsonbin.io" target="_blank" rel="noopener">JSONBin.io</a>.
       </p>
       <label class="row" style="gap:10px;margin:10px 0">
         <input type="checkbox" id="sync-enabled" />
@@ -490,10 +505,24 @@
         <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap">
           <button id="sync-test">✓ Verbinding testen</button>
           <button id="sync-now">↻ Nu synchroniseren</button>
+          <button id="sync-pull-all" class="primary">↓ Haal alles op uit cloud</button>
           <button id="sync-copy">📋 Kopieer instellingen voor kuisvrouw</button>
         </div>
         <p id="sync-message" class="muted" style="font-size:12.5px;margin-top:8px;min-height:18px"></p>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Gegevens overzetten van vorige versie</h2>
+      <div class="hint" style="margin-bottom:12px">
+        <b>Stap 1:</b> Open <code>kuisplanning3.html</code> in je browser en klik op <b>⬇ Exporteren</b> om een JSON-bestand te downloaden.<br/>
+        <b>Stap 2:</b> Klik hieronder op <b>⬆ Importeren</b> en kies dat bestand. Alle kamers, feeds en instellingen worden overgenomen.
+      </div>
+      <div class="row">
+        <button id="btn-import">⬆ Importeren vanuit oud bestand</button>
+        <button id="btn-export">⬇ Exporteren (back-up)</button>
+      </div>
+      <p id="import-msg" class="muted" style="font-size:12.5px;margin-top:8px;min-height:18px"></p>
     </div>
 
     <div class="card">
@@ -654,6 +683,52 @@
   </div>
 </div>
 
+<!-- Speciaal event modal (restaurant, vergaderzaal-uitzondering, …) -->
+<div class="modal-backdrop" id="semodal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head semodal-head" id="semodal-head">
+      <h3 id="semodal-title">Event toevoegen</h3>
+      <button class="modal-close" id="semodal-close" aria-label="Sluiten">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="semodal-type">Type event</label>
+        <select id="semodal-type" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px">
+          <option value="restaurant">🍽️ Restaurant</option>
+          <option value="other">📅 Andere</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="semodal-name">Naam / omschrijving</label>
+        <input type="text" id="semodal-name" placeholder="bv. Trouwfeest, Bedrijfsevent, Receptie…" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+      </div>
+      <div class="field" style="display:flex;gap:10px;flex-wrap:wrap">
+        <div style="flex:1;min-width:120px">
+          <label for="semodal-start">Startdatum</label>
+          <input type="date" id="semodal-start" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+        </div>
+        <div style="flex:1;min-width:120px">
+          <label for="semodal-end">Einddatum</label>
+          <input type="date" id="semodal-end" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="semodal-note">Notitie (optioneel)</label>
+        <textarea id="semodal-note" rows="2" placeholder="Extra info voor de kuisvrouw…" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical"></textarea>
+      </div>
+      <div class="banner info" style="margin-top:10px;font-size:12.5px">
+        ⚠ Op dit event kan de kuisvrouw de aangegeven ruimte <b>niet kuisen</b>.
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="danger small" id="semodal-delete" style="display:none">Verwijderen</button>
+      <div class="spacer"></div>
+      <button id="semodal-cancel">Annuleer</button>
+      <button class="primary" id="semodal-save">Opslaan</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ---------- Storage ---------- */
 const LS_KEY = "bnb-cleaning-planner-v5";
@@ -667,28 +742,32 @@ const DEFAULT_PROXIES = [
 function defaultCfg(){ return {
   accommodations: [], proxies: DEFAULT_PROXIES.map(p=>({id:p.id,enabled:p.enabled})),
   guestCounts: {}, cleanings: {}, notify: { phone: "" }, notes: {},
-  meetings: {}, cleaningDays: {},
+  meetings: {}, cleaningDays: {}, specialEvents: [],
   sync: { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" },
-  _ts: { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{} }
+  _ts: { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{}, specialEvents:0 }
 }; }
 function loadCfg(){
   try{
     let raw = JSON.parse(localStorage.getItem(LS_KEY));
-    // Auto-inherit config van v4 (bnb-cleaning-planner-v4) als v5 leeg is
-    if(!raw){
-      const prev = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v4"));
-      if(prev){
-        raw = prev;
+    // Migreer van oudere versies als v5 leeg is of nog geen kamers heeft.
+    // Bewaar specialEvents die al in v5 staan.
+    const noRooms = !raw || !Array.isArray(raw.accommodations) || raw.accommodations.length === 0;
+    if(noRooms){
+      const existingSE  = (raw && Array.isArray(raw.specialEvents)) ? raw.specialEvents : [];
+      const existingSync = (raw && raw.sync) ? raw.sync : null;
+      let src = null;
+      for(const key of ["bnb-cleaning-planner-v4","bnb-cleaning-planner-v3","bnb-cleaning-planner-v2"]){
+        const candidate = JSON.parse(localStorage.getItem(key));
+        if(candidate && Array.isArray(candidate.accommodations) && candidate.accommodations.length > 0){
+          src = candidate; break;
+        }
+      }
+      if(src){
+        raw = src;
+        if(existingSE.length > 0 && (!raw.specialEvents || !raw.specialEvents.length)) raw.specialEvents = existingSE;
+        if(existingSync && existingSync.binId) raw.sync = existingSync;
         try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){}
       }
-    }
-    if(!raw){
-      const vOld = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v3"));
-      if(vOld){ raw = vOld; try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
-    }
-    if(!raw){
-      const vOlder = JSON.parse(localStorage.getItem("bnb-cleaning-planner-v2"));
-      if(vOlder){ raw = vOlder; try{ localStorage.setItem(LS_KEY, JSON.stringify(raw)); }catch(e){} }
     }
     if(!raw) return defaultCfg();
     // migrate
@@ -712,13 +791,15 @@ function loadCfg(){
     if(!raw.notes) raw.notes = {};
     if(!raw.meetings) raw.meetings = {};
     if(!raw.cleaningDays) raw.cleaningDays = {};
+    if(!raw.specialEvents) raw.specialEvents = [];
     if(!raw.sync) raw.sync = { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" };
-    if(!raw._ts) raw._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{} };
+    if(!raw._ts) raw._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{}, specialEvents:0 };
     if(!raw._ts.guestCounts) raw._ts.guestCounts = {};
     if(!raw._ts.cleanings)   raw._ts.cleanings   = {};
     if(!raw._ts.notes)       raw._ts.notes       = {};
     if(!raw._ts.meetings)    raw._ts.meetings    = {};
     if(!raw._ts.cleaningDays) raw._ts.cleaningDays = {};
+    if(!raw._ts.specialEvents) raw._ts.specialEvents = 0;
     // Als er al data is van een vorige versie zonder _ts, stempel met huidige tijd
     // zodat deze data andere toestellen (standaard _ts = 0) kan overschrijven bij sync.
     const _now = Date.now();
@@ -753,7 +834,7 @@ function saveCfg(opts){
   if(!opts || opts.sync !== false) scheduleCloudPush();
 }
 function stampTs(section, key){
-  if(!cfg._ts) cfg._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+  if(!cfg._ts) cfg._ts = { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{}, specialEvents:0 };
   const now = Date.now();
   if(key === undefined){
     cfg._ts[section] = now;
@@ -963,6 +1044,56 @@ document.getElementById("btn-whatsapp-test").addEventListener("click",()=>{
   } catch(e){
     window.location.href = url;
   }
+});
+
+/* ---------- Import / Export ---------- */
+document.getElementById("btn-export").addEventListener("click",()=>{
+  const clean = JSON.parse(JSON.stringify(cfg));
+  // strip transient velden
+  for(const a of (clean.accommodations||[])){
+    for(const k of ["booking","airbnb"]){
+      if(a[k]){ delete a[k]._status; delete a[k]._statusClass; }
+    }
+  }
+  const blob = new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kuisplanning-config.json";
+  a.click();
+});
+document.getElementById("btn-import").addEventListener("click",()=>{
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/json";
+  inp.onchange = () => {
+    const f = inp.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const obj = JSON.parse(r.result);
+        if(obj && Array.isArray(obj.accommodations)){
+          // bewaar ALTIJD de sync-instellingen van het huidige toestel
+          const existingSync = JSON.parse(JSON.stringify(cfg.sync || {}));
+          Object.assign(cfg, obj);
+          // sync-credentials nooit overschrijven met lege data uit import
+          if(existingSync.binId || existingSync.apiKey) cfg.sync = existingSync;
+          else if(!cfg.sync) cfg.sync = { enabled:false, binId:"", apiKey:"", role:"owner", lastAt:0, lastStatus:"" };
+          if(!cfg.specialEvents) cfg.specialEvents = [];
+          if(!cfg._ts) cfg._ts = {};
+          cfg._ts.accommodations = Date.now();
+          saveCfg();
+          renderAccs(); refreshAccFilter(); renderProxies();
+          const msgEl = document.getElementById("import-msg");
+          msgEl.textContent = `✓ ${cfg.accommodations.length} kamer(s) geïmporteerd. Klik op Vernieuwen om de feeds te laden.`;
+          msgEl.style.color = "var(--ok)";
+          refresh();
+        } else {
+          alert("Ongeldig bestand — geen accommodaties gevonden.");
+        }
+      }catch(e){ alert("Kan bestand niet lezen: "+e.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
 });
 
 document.getElementById("btn-clear").addEventListener("click",()=>{
@@ -1211,13 +1342,33 @@ function render(){
     return true;
   });
 
-  if(schedule.length===0){
-    body.innerHTML = '<div class="empty">Geen check-outs gevonden in deze periode.<br/><span class="muted">Voeg iCal-feeds toe onder <b>Instellingen</b> en klik op <b>Vernieuwen</b>.</span></div>';
+  // Speciale events als extra rijen (één rij per dag)
+  const specialRows = [];
+  for(const se of (cfg.specialEvents||[])){
+    const seStart = parseDateString(se.start);
+    const seEnd   = parseDateString(se.end);
+    if(!seStart||!seEnd) continue;
+    const cur = new Date(seStart);
+    while(cur <= seEnd){
+      const d = new Date(cur);
+      if((!maxDate||d<=maxDate) && d >= new Date(today.getTime()-2*86400000)){
+        specialRows.push({ _isSpecial:true, _se:se, checkout:d });
+      }
+      cur.setDate(cur.getDate()+1);
+    }
+  }
+
+  // Merge + sort op datum
+  const allRows = [...schedule.map(r=>({...r,_isSpecial:false})), ...specialRows]
+    .sort((a,b)=>a.checkout-b.checkout);
+
+  if(allRows.length===0){
+    body.innerHTML = '<div class="empty">Geen check-outs of events gevonden in deze periode.<br/><span class="muted">Voeg iCal-feeds toe onder <b>Instellingen</b> en klik op <b>Vernieuwen</b>.</span></div>';
     return;
   }
 
   const byMonth = new Map();
-  for(const r of schedule){
+  for(const r of allRows){
     const k = r.checkout.getFullYear()+"-"+String(r.checkout.getMonth()+1).padStart(2,"0");
     if(!byMonth.has(k)) byMonth.set(k,[]);
     byMonth.get(k).push(r);
@@ -1230,15 +1381,27 @@ function render(){
     const monthName = d.toLocaleDateString("nl-BE",{month:"long",year:"numeric"});
     html += `<div class="month-h">${monthName}</div>`;
     html += `<table><thead><tr>
-      <th style="width:22%">Kuisdag (check-out)</th>
-      <th>Kamer</th>
-      <th style="width:30%">Volgende gast</th>
+      <th style="width:22%">Kuisdag / Event</th>
+      <th>Kamer / Ruimte</th>
+      <th style="width:30%">Volgende gast / Opmerking</th>
     </tr></thead><tbody>`;
     for(const r of rows){
-      const past = r.checkout < today;
+      const past    = r.checkout < today;
       const isToday = r.checkout.getTime()===today.getTime();
       const weekday = r.checkout.toLocaleDateString("nl-BE",{weekday:"long"});
       const dateStr = r.checkout.toLocaleDateString("nl-BE",{day:"2-digit",month:"2-digit",year:"numeric"});
+      if(r._isSpecial){
+        const se  = r._se;
+        const clr = seTypeColor(se.type);
+        const icon = seTypeIcon(se.type);
+        const typeLabel = se.type==='restaurant'?'Restaurant':'Event';
+        html += `<tr class="${past?"past":""} ${isToday?"today":""}" style="${past?"":"background:#fff8f8"}">
+          <td class="date" style="border-left:4px solid ${clr}">${dateStr}<span class="weekday">${weekday}</span></td>
+          <td>${icon} <b>${escapeHtml(se.name)}</b> <span class="src" style="background:${clr}">${typeLabel}</span></td>
+          <td><span class="chip tight" style="background:#fbe7d6;color:#b8541a">⚠ Niet kuisen</span>${se.note?` <span class="muted" style="font-size:12px">${escapeHtml(se.note)}</span>`:""}</td>
+        </tr>`;
+        continue;
+      }
       let nextHtml;
       if(r.nextIn){
         const diff = Math.round((r.nextIn - r.checkout)/86400000);
@@ -1257,6 +1420,26 @@ function render(){
     html += "</tbody></table>";
   }
   body.innerHTML = html;
+}
+
+/* ---------- Special events helpers ---------- */
+function parseDateString(s){
+  if(!s) return null;
+  const p = s.split('-').map(Number);
+  if(p.length < 3 || !p[0] || !p[1] || !p[2]) return null;
+  return new Date(p[0], p[1]-1, p[2]);
+}
+function seTypeColor(type){
+  if(type==='restaurant') return '#b91c1c';
+  return '#7e22ce';
+}
+function seTypeColor2(type){
+  if(type==='restaurant') return '#7f1d1d';
+  return '#6b21a8';
+}
+function seTypeIcon(type){
+  if(type==='restaurant') return '🍽️';
+  return '📅';
 }
 
 /* ---------- Calendar ---------- */
@@ -1402,7 +1585,11 @@ function renderCalendar(){
 
   // Legend
   const used = cfg.accommodations.filter(a=>a.name).map(a=>a.name);
-  legendEl.innerHTML = used.map(n=>`<span><span class="sw" style="background:${accColor(n)}"></span>${escapeHtml(n)}</span>`).join("");
+  let legendHtml = used.map(n=>`<span><span class="sw" style="background:${accColor(n)}"></span>${escapeHtml(n)}</span>`).join("");
+  if((cfg.specialEvents||[]).length > 0){
+    legendHtml += `<span><span class="sw" style="background:repeating-linear-gradient(135deg,#b91c1c 0,#b91c1c 6px,#7f1d1d 6px,#7f1d1d 12px)"></span>Speciale events</span>`;
+  }
+  legendEl.innerHTML = legendHtml;
 
   if(events.length===0){
     bannerEl.innerHTML = `<div class="banner info" style="margin-bottom:10px">Nog geen reservaties geladen. Voeg feeds toe onder <b>Instellingen</b> en klik op <b>↻ Vernieuwen</b>.</div>`;
@@ -1479,9 +1666,11 @@ function renderCalendar(){
     for(const s of bookingSegs){
       const ev = s.ev;
       const cls = ["bar"];
-      if(s.hasStart) cls.push("start");
-      if(s.hasEnd) cls.push("end");
+      if(s.hasStart){ cls.push("start"); cls.push("checkin-late"); }
+      if(s.hasEnd)  { cls.push("end");   cls.push("checkout-sliver"); }
       if(!s.hasStart && !s.hasEnd) cls.push("mid");
+      // Verleng endCol met 1 kolom voor checkout-sliver (sliver zichtbaar op checkout-dag zelf)
+      const renderEndCol = s.hasEnd ? Math.min(8, s.endCol + 1) : s.endCol;
       const isDone = isCleaningDone(ev);
       if(isDone) cls.push("done");
       const color = accColor(ev.accName);
@@ -1498,7 +1687,7 @@ function renderCalendar(){
       const rightBadge = isDone
         ? `<span class="check">✓ klaar</span>`
         : `<span class="ppl">👤 ${escapeHtml(String(pplTxt))}</span>`;
-      html += `<div class="${cls.join(" ")}" style="--bar-bg:${color};--cstart:${s.startCol};--cend:${s.endCol};--lane:${2+s.lane}" data-bookkey="${escapeHtml(dataKey)}" title="${escapeHtml(title)}">
+      html += `<div class="${cls.join(" ")}" style="--bar-bg:${color};--cstart:${s.startCol};--cend:${renderEndCol};--lane:${2+s.lane}" data-bookkey="${escapeHtml(dataKey)}" title="${escapeHtml(title)}">
         <span class="src-pill">${escapeHtml(srcLabel)}</span>
         <span class="name">${escapeHtml(ev.accName)}</span>
         ${notePill}
@@ -1531,8 +1720,49 @@ function renderCalendar(){
       </div>`;
     }
 
+    // special event bars (restaurant, …) — eigen lane-pass na meetings
+    const seProxies = (cfg.specialEvents||[]).map(se=>{
+      const s = parseDateString(se.start), e = parseDateString(se.end);
+      if(!s||!e) return null;
+      const eExcl = new Date(e.getFullYear(),e.getMonth(),e.getDate()+1);
+      return { _se:se, start:s, end:eExcl };
+    }).filter(Boolean);
+    const seWeekEnd = addDays(weekStart,7);
+    const seSegs = [];
+    for(const p of seProxies){
+      const ps = stripTime(p.start), pe = stripTime(p.end);
+      if(pe <= weekStart || ps >= seWeekEnd) continue;
+      const segStart = ps < weekStart ? weekStart : ps;
+      const segEnd   = pe > seWeekEnd  ? seWeekEnd  : pe;
+      const sc = dayDiff(weekStart, segStart)+1;
+      const span = dayDiff(segStart, segEnd);
+      if(span<=0) continue;
+      seSegs.push({ _se:p._se, startCol:sc, endCol:sc+span, lane:0 });
+    }
+    // simple lane assignment for SE
+    const seLanes = [];
+    seSegs.sort((a,b)=>a.startCol-b.startCol);
+    for(const ss of seSegs){
+      let placed=-1;
+      for(let i=0;i<seLanes.length;i++){ if(seLanes[i]<=ss.startCol){placed=i;break;} }
+      if(placed<0){seLanes.push(ss.endCol);placed=seLanes.length-1;}
+      else seLanes[placed]=ss.endCol;
+      ss.lane=placed+laneCount; // place under booking+meeting lanes
+    }
+    const totalLanes = laneCount + seLanes.length;
+    for(const ss of seSegs){
+      const se = ss._se;
+      const c=seTypeColor(se.type), c2=seTypeColor2(se.type), icon=seTypeIcon(se.type);
+      const ttip = se.name+(se.note?'\n'+se.note:'')+'\nKlik om te bewerken';
+      html += `<div class="bar special-event" style="background:repeating-linear-gradient(135deg,${c} 0,${c} 12px,${c2} 12px,${c2} 22px);--cstart:${ss.startCol};--cend:${ss.endCol};--lane:${2+ss.lane}" data-seid="${escapeHtml(se.id)}" title="${escapeHtml(ttip)}">
+        <span class="event-icon">${icon}</span>
+        <span class="name">${escapeHtml(se.name)}</span>
+      </div>`;
+    }
+
     // spacer row so bars always get visible even if no days extend
-    if(laneCount>0) html += `<div style="grid-column:1/8;grid-row:${2+laneCount};min-height:4px"></div>`;
+    const finalLaneCount = totalLanes;
+    if(finalLaneCount>0) html += `<div style="grid-column:1/8;grid-row:${2+finalLaneCount};min-height:4px"></div>`;
     else html += `<div style="grid-column:1/8;grid-row:2;min-height:4px"></div>`;
 
     html += `</div>`; // end week
@@ -1542,7 +1772,15 @@ function renderCalendar(){
   body.innerHTML = html;
 
   // bind bar clicks to open modal
-  body.querySelectorAll(".bar").forEach(el=>{
+  body.querySelectorAll(".bar.special-event").forEach(el=>{
+    el.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      const id = el.getAttribute("data-seid");
+      const se = (cfg.specialEvents||[]).find(x=>x.id===id);
+      if(se) openSpecialEventModal(se);
+    });
+  });
+  body.querySelectorAll(".bar:not(.special-event)").forEach(el=>{
     el.addEventListener("click",(e)=>{
       e.stopPropagation();
       const meetId = el.getAttribute("data-meetid");
@@ -1823,7 +2061,12 @@ modalEls.notes.addEventListener("input",()=>{
 // Close button + backdrop click + ESC
 modalEls.close.addEventListener("click", closeBookingModal);
 modalEls.backdrop.addEventListener("click",(e)=>{ if(e.target===modalEls.backdrop) closeBookingModal(); });
-document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && modalEls.backdrop.classList.contains("show")) closeBookingModal(); });
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape"){
+    if(modalEls.backdrop.classList.contains("show")) closeBookingModal();
+    if(seModal.backdrop.classList.contains("show")) closeSpecialEventModal();
+  }
+});
 
 // Melden als klaar → open finish-form (niet meteen afmelden)
 modalEls.done.addEventListener("click",()=>{
@@ -2187,6 +2430,90 @@ function shadeColor(hex, percent){
   return "#" + ((1<<24) + (r<<16) + (g<<8) + b).toString(16).slice(1);
 }
 
+/* ---------- Special Event Modal ---------- */
+let currentSE = null;
+const seModal = {
+  backdrop: document.getElementById("semodal-backdrop"),
+  title:    document.getElementById("semodal-title"),
+  close:    document.getElementById("semodal-close"),
+  type:     document.getElementById("semodal-type"),
+  name:     document.getElementById("semodal-name"),
+  start:    document.getElementById("semodal-start"),
+  end:      document.getElementById("semodal-end"),
+  note:     document.getElementById("semodal-note"),
+  save:     document.getElementById("semodal-save"),
+  cancel:   document.getElementById("semodal-cancel"),
+  del:      document.getElementById("semodal-delete"),
+};
+function openNewSpecialEventModal(defaultDate){
+  currentSE = null;
+  seModal.title.textContent = "Event toevoegen";
+  seModal.type.value  = "restaurant";
+  seModal.name.value  = "";
+  seModal.start.value = defaultDate || ymd(new Date());
+  seModal.end.value   = defaultDate || ymd(new Date());
+  seModal.note.value  = "";
+  seModal.del.style.display = "none";
+  seModal.backdrop.classList.add("show");
+  setTimeout(()=>seModal.name.focus(), 80);
+}
+function openSpecialEventModal(se){
+  currentSE = se;
+  seModal.title.textContent = "Event bewerken";
+  seModal.type.value  = se.type  || "restaurant";
+  seModal.name.value  = se.name  || "";
+  seModal.start.value = se.start || "";
+  seModal.end.value   = se.end   || "";
+  seModal.note.value  = se.note  || "";
+  seModal.del.style.display = "inline-block";
+  seModal.backdrop.classList.add("show");
+}
+function closeSpecialEventModal(){
+  seModal.backdrop.classList.remove("show");
+  currentSE = null;
+}
+seModal.close.addEventListener("click", closeSpecialEventModal);
+seModal.cancel.addEventListener("click", closeSpecialEventModal);
+seModal.backdrop.addEventListener("click", e=>{ if(e.target===seModal.backdrop) closeSpecialEventModal(); });
+seModal.start.addEventListener("change", ()=>{
+  if(!seModal.end.value || seModal.end.value < seModal.start.value) seModal.end.value = seModal.start.value;
+});
+seModal.save.addEventListener("click", ()=>{
+  const name  = seModal.name.value.trim();
+  const start = seModal.start.value;
+  const end   = seModal.end.value;
+  if(!name)       { alert("Geef een naam op."); return; }
+  if(!start||!end){ alert("Geef een start- en einddatum op."); return; }
+  if(end < start) { alert("Einddatum moet gelijk aan of na startdatum zijn."); return; }
+  if(!cfg.specialEvents) cfg.specialEvents = [];
+  if(currentSE){
+    currentSE.name=name; currentSE.type=seModal.type.value;
+    currentSE.start=start; currentSE.end=end; currentSE.note=seModal.note.value.trim();
+  } else {
+    cfg.specialEvents.push({
+      id: Date.now().toString(36)+Math.random().toString(36).slice(2),
+      name, type:seModal.type.value, start, end, note:seModal.note.value.trim()
+    });
+  }
+  if(!cfg._ts) cfg._ts = {};
+  cfg._ts.specialEvents = Date.now();
+  saveCfg();
+  closeSpecialEventModal();
+  renderCalendar();
+});
+seModal.del.addEventListener("click", ()=>{
+  if(!currentSE||!confirm("Dit event verwijderen?")) return;
+  cfg.specialEvents = (cfg.specialEvents||[]).filter(x=>x.id!==currentSE.id);
+  if(!cfg._ts) cfg._ts = {};
+  cfg._ts.specialEvents = Date.now();
+  saveCfg();
+  closeSpecialEventModal();
+  renderCalendar();
+});
+document.getElementById("cal-add-event").addEventListener("click", ()=>{
+  openNewSpecialEventModal(ymd(calCursor));
+});
+
 /* ---------- Utils ---------- */
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]); }
 
@@ -2205,6 +2532,7 @@ const syncEls = {
   fields:   document.getElementById("sync-fields"),
   test:     document.getElementById("sync-test"),
   now:      document.getElementById("sync-now"),
+  pullAll:  document.getElementById("sync-pull-all"),
   copy:     document.getElementById("sync-copy"),
   message:  document.getElementById("sync-message"),
   pill:     document.getElementById("sync-status-pill")
@@ -2267,12 +2595,15 @@ function mergeConfigs(local, remote){
   const lt = local._ts || {};
   const rt = remote._ts || {};
   const merged = JSON.parse(JSON.stringify(local));
-  merged._ts = merged._ts || { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{} };
+  merged._ts = merged._ts || { accommodations:0, proxies:0, notify:0, guestCounts:{}, cleanings:{}, notes:{}, meetings:{}, cleaningDays:{}, specialEvents:0 };
+  if(!merged._ts.meetings)    merged._ts.meetings    = {};
+  if(!merged._ts.cleaningDays) merged._ts.cleaningDays = {};
+  if(!merged._ts.specialEvents) merged._ts.specialEvents = 0;
 
-  // Whole-object sections: accommodations, proxies, notify → newer _ts wins
+  // Whole-object sections: accommodations, proxies, notify, specialEvents → newer _ts wins
   // Tie-breaker: bij gelijke tijdstempels (bv. beide 0 na migratie), wint de kant mét data over de kant zonder data.
   const isEmpty = (v) => v == null || (Array.isArray(v) && v.length===0) || (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length===0);
-  for(const sec of ["accommodations","proxies","notify"]){
+  for(const sec of ["accommodations","proxies","notify","specialEvents"]){
     const ltv = lt[sec] || 0, rtv = rt[sec] || 0;
     const localEmpty = isEmpty(local[sec]);
     const remoteEmpty = isEmpty(remote[sec]);
@@ -2408,6 +2739,11 @@ function renderSyncUi(){
   syncEls.apiKey.value = (cfg.sync && cfg.sync.apiKey) || "";
   syncEls.role.value   = (cfg.sync && cfg.sync.role)   || "owner";
   syncEls.fields.style.opacity = syncEls.enabled.checked ? "1" : "0.55";
+  // Toon herstel-hint als er geen kamers zijn maar sync al eens ingesteld was
+  const noRooms = !cfg.accommodations || cfg.accommodations.length === 0;
+  const hasCreds = !!(cfg.sync && cfg.sync.binId);
+  const hint = document.getElementById("sync-recover-hint");
+  if(hint) hint.style.display = (noRooms && hasCreds) ? "block" : "none";
   setSyncPill();
 }
 renderSyncUi();
@@ -2458,6 +2794,35 @@ syncEls.test.addEventListener("click", async ()=>{
   }
 });
 syncEls.now.addEventListener("click",()=>{ cloudSyncOnce(); });
+// "Haal alles op uit cloud" — overschrijf lokale data met cloud-versie (force pull)
+syncEls.pullAll.addEventListener("click", async ()=>{
+  if(!syncEnabled()){ alert("Zet eerst cloud-synchronisatie aan en vul Bin ID en Master Key in."); return; }
+  syncEls.pullAll.disabled = true;
+  syncEls.pullAll.textContent = "Bezig…";
+  try{
+    const remote = await cloudFetch();
+    if(!remote || !remote.accommodations || !remote.accommodations.length){
+      alert("Geen kamers gevonden in de cloud. Controleer je Bin ID en Master Key.");
+      return;
+    }
+    const existingSync = JSON.parse(JSON.stringify(cfg.sync||{}));
+    cfg = { ...defaultCfg(), ...remote };
+    cfg.sync = existingSync; // bewaar lokale credentials
+    if(!cfg.specialEvents) cfg.specialEvents = [];
+    if(!cfg._ts) cfg._ts = {};
+    saveCfg({ sync:false });
+    renderAccs(); refreshAccFilter(); renderProxies(); renderSyncUi();
+    setSyncMessage("✓ Alle data opgehaald uit cloud", "ok");
+    showToast("✓ Data hersteld uit cloud", "ok");
+    await refresh();
+    renderCalendar();
+  } catch(e){
+    setSyncMessage("✗ Fout: " + e.message, "err");
+  } finally {
+    syncEls.pullAll.disabled = false;
+    syncEls.pullAll.textContent = "↓ Haal alles op uit cloud";
+  }
+});
 syncEls.copy.addEventListener("click", async ()=>{
   const txt = "Kuisplanning-sync instellingen\n"
     + "Bin ID: " + (cfg.sync.binId||"(leeg)") + "\n"
